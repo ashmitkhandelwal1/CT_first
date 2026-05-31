@@ -1,9 +1,0 @@
-# Ignore zip archives
-*.zip
-
-# Ignore all category-split CSV files
-*.csv
-
-# Allow only the main Combined dataset and the cleaned output dataset
-!Combined_dataset.csv
-!cleaned_shopping_dataset.csv
