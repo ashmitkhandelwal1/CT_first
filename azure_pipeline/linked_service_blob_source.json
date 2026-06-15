@@ -1,0 +1,23 @@
+{
+  "name": "LS_AzureBlobStorage_Source",
+  "type": "Microsoft.DataFactory/factories/linkedservices",
+  "properties": {
+    "description": "Linked Service connecting ADF to Azure Blob Storage (Source) - Ashmit Gupta",
+    "type": "AzureBlobStorage",
+    "typeProperties": {
+      "connectionString": {
+        "type": "SecureString",
+        "value": "DefaultEndpointsProtocol=https;AccountName=stashmitsuperstore01;AccountKey=<YOUR_STORAGE_ACCOUNT_KEY>;EndpointSuffix=core.windows.net"
+      }
+    },
+    "connectVia": {
+      "referenceName": "AutoResolveIntegrationRuntime",
+      "type": "IntegrationRuntimeReference"
+    },
+    "annotations": [
+      "Assignment-4",
+      "Ashmit Gupta",
+      "Source Blob Storage"
+    ]
+  }
+}

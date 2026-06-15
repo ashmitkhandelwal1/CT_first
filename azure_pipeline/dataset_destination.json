@@ -1,0 +1,36 @@
+{
+  "name": "DS_Destination_SuperstoreCSV",
+  "type": "Microsoft.DataFactory/factories/datasets",
+  "properties": {
+    "description": "Destination dataset - Processed Superstore CSV in Blob Storage (Destination Container) | Author: Ashmit Gupta",
+    "linkedServiceName": {
+      "referenceName": "LS_AzureBlobStorage_Destination",
+      "type": "LinkedServiceReference"
+    },
+    "type": "DelimitedText",
+    "typeProperties": {
+      "location": {
+        "type": "AzureBlobStorageLocation",
+        "container": "destination-data",
+        "folderPath": "processed",
+        "fileName": {
+          "value": "@concat('superstore_processed_', formatDateTime(utcNow(), 'yyyyMMdd_HHmmss'), '.csv')",
+          "type": "Expression"
+        }
+      },
+      "columnDelimiter": ",",
+      "rowDelimiter": "\n",
+      "encodingName": "UTF-8",
+      "escapeChar": "\\",
+      "quoteChar": "\"",
+      "firstRowAsHeader": true,
+      "compressionCodec": "none"
+    },
+    "schema": [],
+    "annotations": [
+      "Assignment-4",
+      "Ashmit Gupta",
+      "Destination - Processed CSV"
+    ]
+  }
+}

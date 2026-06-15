@@ -1,0 +1,187 @@
+{
+  "name": "PL_Superstore_BlobToBlob",
+  "type": "Microsoft.DataFactory/factories/pipelines",
+  "properties": {
+    "description": "End-to-end pipeline: Blob (Source) → ADF (Get Metadata + Copy Data) → Blob (Destination) | Author: Ashmit Gupta | Assignment-4",
+    "activities": [
+      {
+        "name": "ACT_GetMetadata_SuperstoreFile",
+        "type": "GetMetadata",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "0.00:10:00",
+          "retry": 2,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "userProperties": [
+          { "name": "Author",      "value": "Ashmit Gupta" },
+          { "name": "Assignment",  "value": "Assignment-4" }
+        ],
+        "typeProperties": {
+          "dataset": {
+            "referenceName": "DS_Source_SuperstoreCSV",
+            "type": "DatasetReference"
+          },
+          "fieldList": [
+            "exists",
+            "itemName",
+            "itemType",
+            "size",
+            "lastModified",
+            "columnCount",
+            "structure"
+          ],
+          "storeSettings": {
+            "type": "AzureBlobStorageReadSettings",
+            "recursive": false,
+            "enablePartitionDiscovery": false
+          },
+          "formatSettings": {
+            "type": "DelimitedTextReadSettings"
+          }
+        }
+      },
+      {
+        "name": "ACT_IfCondition_FileExists",
+        "type": "IfCondition",
+        "dependsOn": [
+          {
+            "activity": "ACT_GetMetadata_SuperstoreFile",
+            "dependencyConditions": ["Succeeded"]
+          }
+        ],
+        "userProperties": [],
+        "typeProperties": {
+          "expression": {
+            "value": "@equals(activity('ACT_GetMetadata_SuperstoreFile').output.exists, true)",
+            "type": "Expression"
+          },
+          "ifTrueActivities": [
+            {
+              "name": "ACT_CopyData_SuperstoreCSV",
+              "type": "Copy",
+              "dependsOn": [],
+              "policy": {
+                "timeout": "0.01:00:00",
+                "retry": 2,
+                "retryIntervalInSeconds": 30,
+                "secureOutput": false,
+                "secureInput": false
+              },
+              "userProperties": [
+                { "name": "Source",      "value": "source-data/Sample - Superstore.csv" },
+                { "name": "Destination", "value": "destination-data/processed/" },
+                { "name": "Author",      "value": "Ashmit Gupta" }
+              ],
+              "typeProperties": {
+                "source": {
+                  "type": "DelimitedTextSource",
+                  "storeSettings": {
+                    "type": "AzureBlobStorageReadSettings",
+                    "recursive": false,
+                    "enablePartitionDiscovery": false
+                  },
+                  "formatSettings": {
+                    "type": "DelimitedTextReadSettings",
+                    "skipLineCount": 0
+                  }
+                },
+                "sink": {
+                  "type": "DelimitedTextSink",
+                  "storeSettings": {
+                    "type": "AzureBlobStorageWriteSettings"
+                  },
+                  "formatSettings": {
+                    "type": "DelimitedTextWriteSettings",
+                    "quoteAllText": false,
+                    "fileExtension": ".csv"
+                  }
+                },
+                "enableStaging": false,
+                "translator": {
+                  "type": "TabularTranslator",
+                  "typeConversion": true,
+                  "typeConversionSettings": {
+                    "allowDataTruncation": true,
+                    "treatBooleanAsNumber": false
+                  }
+                }
+              },
+              "inputs": [
+                {
+                  "referenceName": "DS_Source_SuperstoreCSV",
+                  "type": "DatasetReference"
+                }
+              ],
+              "outputs": [
+                {
+                  "referenceName": "DS_Destination_SuperstoreCSV",
+                  "type": "DatasetReference"
+                }
+              ]
+            }
+          ],
+          "ifFalseActivities": [
+            {
+              "name": "ACT_Fail_FileNotFound",
+              "type": "Fail",
+              "dependsOn": [],
+              "userProperties": [],
+              "typeProperties": {
+                "message": "Source file 'Sample - Superstore.csv' does not exist in the source-data container. Please upload the file before running the pipeline.",
+                "errorCode": "FILE_NOT_FOUND"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "ACT_SetVariable_RecordCount",
+        "type": "SetVariable",
+        "dependsOn": [
+          {
+            "activity": "ACT_IfCondition_FileExists",
+            "dependencyConditions": ["Succeeded"]
+          }
+        ],
+        "userProperties": [],
+        "typeProperties": {
+          "variableName": "v_RecordsCopied",
+          "value": {
+            "value": "@string(activity('ACT_CopyData_SuperstoreCSV').output.rowsCopied)",
+            "type": "Expression"
+          }
+        }
+      }
+    ],
+    "variables": {
+      "v_RecordsCopied": {
+        "type": "String",
+        "defaultValue": "0"
+      },
+      "v_PipelineStatus": {
+        "type": "String",
+        "defaultValue": "Running"
+      }
+    },
+    "parameters": {
+      "p_SourceFileName": {
+        "type": "string",
+        "defaultValue": "Sample - Superstore.csv"
+      },
+      "p_DestinationFolder": {
+        "type": "string",
+        "defaultValue": "processed"
+      }
+    },
+    "annotations": [
+      "Assignment-4",
+      "Ashmit Gupta",
+      "Blob to Blob Copy Pipeline",
+      "Superstore Dataset"
+    ],
+    "lastPublishTime": "2026-06-15T04:00:00Z"
+  }
+}

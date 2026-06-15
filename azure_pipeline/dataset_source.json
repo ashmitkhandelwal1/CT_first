@@ -1,0 +1,55 @@
+{
+  "name": "DS_Source_SuperstoreCSV",
+  "type": "Microsoft.DataFactory/factories/datasets",
+  "properties": {
+    "description": "Source dataset - Superstore CSV file in Blob Storage (Source Container) | Author: Ashmit Gupta",
+    "linkedServiceName": {
+      "referenceName": "LS_AzureBlobStorage_Source",
+      "type": "LinkedServiceReference"
+    },
+    "type": "DelimitedText",
+    "typeProperties": {
+      "location": {
+        "type": "AzureBlobStorageLocation",
+        "container": "source-data",
+        "folderPath": "",
+        "fileName": "Sample - Superstore.csv"
+      },
+      "columnDelimiter": ",",
+      "rowDelimiter": "\n",
+      "encodingName": "UTF-8",
+      "escapeChar": "\\",
+      "quoteChar": "\"",
+      "firstRowAsHeader": true,
+      "compressionCodec": "none"
+    },
+    "schema": [
+      { "name": "Row ID",        "type": "Int32" },
+      { "name": "Order ID",      "type": "String" },
+      { "name": "Order Date",    "type": "String" },
+      { "name": "Ship Date",     "type": "String" },
+      { "name": "Ship Mode",     "type": "String" },
+      { "name": "Customer ID",   "type": "String" },
+      { "name": "Customer Name", "type": "String" },
+      { "name": "Segment",       "type": "String" },
+      { "name": "Country",       "type": "String" },
+      { "name": "City",          "type": "String" },
+      { "name": "State",         "type": "String" },
+      { "name": "Postal Code",   "type": "Int32" },
+      { "name": "Region",        "type": "String" },
+      { "name": "Product ID",    "type": "String" },
+      { "name": "Category",      "type": "String" },
+      { "name": "Sub-Category",  "type": "String" },
+      { "name": "Product Name",  "type": "String" },
+      { "name": "Sales",         "type": "Double" },
+      { "name": "Quantity",      "type": "Int32" },
+      { "name": "Discount",      "type": "Double" },
+      { "name": "Profit",        "type": "Double" }
+    ],
+    "annotations": [
+      "Assignment-4",
+      "Ashmit Gupta",
+      "Source - Superstore CSV"
+    ]
+  }
+}

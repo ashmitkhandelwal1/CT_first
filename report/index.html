@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Assignment 4 — Azure Data Pipeline | Ashmit Gupta</title>
+  <meta name="description" content="End-to-end Azure Data Pipeline using Storage Account and Azure Data Factory — Assignment 4 by Ashmit Gupta" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ============ RESET & TOKENS ============ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --azure-blue:     #0078D4;
+      --azure-dark:     #005A9E;
+      --azure-light:    #50E6FF;
+      --accent-teal:    #00B4D8;
+      --accent-purple:  #7B2FBE;
+      --accent-green:   #00C49A;
+      --accent-orange:  #FF8C42;
+      --bg-dark:        #0A0E1A;
+      --bg-card:        #0F1528;
+      --bg-card2:       #141B30;
+      --bg-card3:       #1A2340;
+      --border:         rgba(0, 120, 212, 0.25);
+      --border-bright:  rgba(80, 230, 255, 0.4);
+      --text-primary:   #E8EDF5;
+      --text-secondary: #8B99B5;
+      --text-muted:     #5A6580;
+      --glow-blue:      0 0 30px rgba(0, 120, 212, 0.3);
+      --glow-teal:      0 0 20px rgba(0, 180, 216, 0.25);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ============ BACKGROUND GRID ============ */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,120,212,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,120,212,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      z-index: 0;
+      pointer-events: none;
+    }
+    body > * { position: relative; z-index: 1; }
+
+    /* ============ HERO ============ */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 60px 24px;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,120,212,0.18) 0%, transparent 70%),
+                  radial-gradient(ellipse 60% 40% at 80% 60%, rgba(123,47,190,0.12) 0%, transparent 60%);
+      position: relative;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(0,120,212,0.15);
+      border: 1px solid var(--border-bright);
+      border-radius: 100px;
+      padding: 6px 18px;
+      font-size: 13px; font-weight: 500; color: var(--azure-light);
+      margin-bottom: 28px;
+      backdrop-filter: blur(10px);
+      animation: fadeDown 0.6s ease both;
+    }
+    .hero-badge::before {
+      content: ''; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 8px var(--accent-green);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{ opacity:1; } 50%{ opacity:0.4; } }
+    @keyframes fadeDown { from{ opacity:0; transform:translateY(-16px); } to{ opacity:1; transform:translateY(0); } }
+    @keyframes fadeUp   { from{ opacity:0; transform:translateY(20px);  } to{ opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn   { from{ opacity:0; } to{ opacity:1; } }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.15;
+      background: linear-gradient(135deg, #fff 0%, var(--azure-light) 50%, var(--accent-teal) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 16px;
+      animation: fadeUp 0.7s ease 0.15s both;
+    }
+    .hero-subtitle {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--text-secondary);
+      max-width: 640px;
+      animation: fadeUp 0.7s ease 0.25s both;
+    }
+    .hero-meta {
+      display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;
+      margin-top: 32px;
+      animation: fadeUp 0.7s ease 0.35s both;
+    }
+    .meta-chip {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--bg-card2); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 10px 18px;
+      font-size: 14px;
+    }
+    .meta-chip .label { color: var(--text-muted); font-size: 12px; display: block; }
+    .meta-chip .value { color: var(--text-primary); font-weight: 600; }
+    .meta-icon { font-size: 20px; }
+    .hero-scroll {
+      margin-top: 56px;
+      animation: fadeIn 1s ease 0.8s both;
+      color: var(--text-muted); font-size: 13px;
+    }
+    .hero-scroll::after {
+      content: ''; display: block; width: 1px; height: 48px;
+      background: linear-gradient(to bottom, var(--azure-blue), transparent);
+      margin: 12px auto 0;
+    }
+
+    /* ============ NAV ============ */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10, 14, 26, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px;
+    }
+    .nav-logo {
+      font-weight: 700; font-size: 15px;
+      background: linear-gradient(90deg, var(--azure-light), var(--accent-teal));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .nav-links { display: flex; gap: 6px; }
+    .nav-links a {
+      color: var(--text-secondary); text-decoration: none;
+      padding: 6px 14px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500;
+      transition: all 0.2s;
+    }
+    .nav-links a:hover { color: var(--text-primary); background: rgba(255,255,255,0.06); }
+
+    /* ============ SECTIONS ============ */
+    .section {
+      max-width: 1200px; margin: 0 auto; padding: 80px 24px;
+    }
+    .section-label {
+      font-size: 12px; font-weight: 600; letter-spacing: 0.12em;
+      color: var(--azure-light); text-transform: uppercase;
+      display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+    }
+    .section-label::before {
+      content: ''; flex: 1; max-width: 32px; height: 1px;
+      background: var(--azure-blue);
+    }
+    .section-title {
+      font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 700;
+      line-height: 1.25; margin-bottom: 48px;
+    }
+    .section-title span {
+      background: linear-gradient(90deg, var(--azure-light), var(--accent-teal));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    hr.divider {
+      border: none; border-top: 1px solid var(--border); margin: 0;
+    }
+
+    /* ============ CARDS ============ */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+    .card:hover {
+      border-color: var(--border-bright);
+      transform: translateY(-3px);
+      box-shadow: var(--glow-blue);
+    }
+    .card-title {
+      font-size: 16px; font-weight: 600; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .card-title .icon { font-size: 22px; }
+    .card p { color: var(--text-secondary); font-size: 14px; }
+
+    /* ============ GRID LAYOUTS ============ */
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+
+    /* ============ STEPS ============ */
+    .steps { display: flex; flex-direction: column; gap: 0; }
+    .step {
+      display: grid; grid-template-columns: 60px 1fr; gap: 24px;
+      padding: 32px 0;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+    .step:last-child { border-bottom: none; }
+    .step-num {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--azure-blue), var(--accent-teal));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 700; flex-shrink: 0;
+      box-shadow: 0 0 20px rgba(0,120,212,0.4);
+    }
+    .step-content h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+    .step-content p  { color: var(--text-secondary); font-size: 14px; margin-bottom: 14px; }
+    .step-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag {
+      font-size: 12px; font-weight: 500; padding: 4px 12px; border-radius: 100px;
+    }
+    .tag-blue   { background: rgba(0,120,212,0.2);  color: var(--azure-light); border: 1px solid rgba(0,120,212,0.3);  }
+    .tag-teal   { background: rgba(0,180,216,0.15); color: #7DEEFF; border: 1px solid rgba(0,180,216,0.3); }
+    .tag-green  { background: rgba(0,196,154,0.15); color: #5FFFCB; border: 1px solid rgba(0,196,154,0.3); }
+    .tag-purple { background: rgba(123,47,190,0.2); color: #C084FC; border: 1px solid rgba(123,47,190,0.3); }
+    .tag-orange { background: rgba(255,140,66,0.15);color: #FFB380; border: 1px solid rgba(255,140,66,0.3); }
+
+    /* ============ ARCHITECTURE DIAGRAM ============ */
+    .arch-diagram {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 48px 32px;
+      overflow-x: auto;
+    }
+    .arch-flow {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; flex-wrap: nowrap; min-width: 700px;
+    }
+    .arch-node {
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      text-align: center; min-width: 130px;
+      transition: all 0.3s;
+      cursor: default;
+    }
+    .arch-node:hover {
+      border-color: var(--border-bright);
+      box-shadow: var(--glow-teal);
+      transform: scale(1.05);
+    }
+    .arch-node .node-icon { font-size: 36px; margin-bottom: 10px; }
+    .arch-node .node-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .arch-node .node-desc { font-size: 11px; color: var(--text-muted); }
+    .arch-node.highlight {
+      background: linear-gradient(135deg, rgba(0,120,212,0.2), rgba(0,180,216,0.15));
+      border-color: var(--azure-blue);
+      box-shadow: 0 0 24px rgba(0,120,212,0.25);
+    }
+    .arch-arrow {
+      display: flex; flex-direction: column; align-items: center; flex-shrink: 0;
+      padding: 0 8px; color: var(--text-muted);
+    }
+    .arch-arrow-line {
+      width: 50px; height: 2px;
+      background: linear-gradient(90deg, var(--azure-blue), var(--accent-teal));
+      position: relative;
+    }
+    .arch-arrow-line::after {
+      content: '▶'; position: absolute; right: -8px; top: -8px;
+      color: var(--accent-teal); font-size: 10px;
+    }
+    .arch-arrow-label { font-size: 10px; margin-top: 6px; color: var(--text-muted); }
+
+    /* ============ ADF ACTIVITIES ============ */
+    .activity-flow {
+      display: flex; flex-direction: column; gap: 0;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .activity {
+      display: flex; align-items: flex-start; gap: 20px;
+      padding: 24px 28px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+    .activity:last-child { border-bottom: none; }
+    .activity:hover { background: rgba(255,255,255,0.02); }
+    .activity-icon {
+      width: 44px; height: 44px; border-radius: var(--radius-sm); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
+    }
+    .activity-icon.blue   { background: rgba(0,120,212,0.2);  border: 1px solid rgba(0,120,212,0.3); }
+    .activity-icon.teal   { background: rgba(0,180,216,0.15); border: 1px solid rgba(0,180,216,0.3); }
+    .activity-icon.green  { background: rgba(0,196,154,0.15); border: 1px solid rgba(0,196,154,0.3); }
+    .activity-icon.orange { background: rgba(255,140,66,0.15);border: 1px solid rgba(255,140,66,0.3); }
+    .activity-icon.purple { background: rgba(123,47,190,0.2); border: 1px solid rgba(123,47,190,0.3); }
+    .activity-body { flex: 1; }
+    .activity-body h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .activity-body p  { font-size: 13px; color: var(--text-secondary); }
+    .activity-connector {
+      text-align: center; padding: 6px 0; font-size: 18px; color: var(--accent-teal);
+      background: var(--bg-card3); border-bottom: 1px solid var(--border);
+    }
+
+    /* ============ CODE BLOCKS ============ */
+    .code-block {
+      background: #070C1A;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--azure-blue);
+      border-radius: var(--radius-sm);
+      padding: 20px 24px;
+      font-family: 'Fira Code', monospace;
+      font-size: 13px; line-height: 1.8;
+      overflow-x: auto; margin: 16px 0;
+      color: #C9D1E0;
+    }
+    .code-block .comment { color: #5A6F8C; }
+    .code-block .key     { color: var(--azure-light); }
+    .code-block .val     { color: #FFE066; }
+    .code-block .str     { color: #7AE7C7; }
+    .code-block .kw      { color: #C084FC; }
+
+    /* ============ STATS ============ */
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .stat-card:hover {
+      border-color: var(--border-bright);
+      box-shadow: var(--glow-blue);
+      transform: translateY(-4px);
+    }
+    .stat-value {
+      font-size: 2rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--azure-light), var(--accent-teal));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 6px;
+    }
+    .stat-label { font-size: 13px; color: var(--text-secondary); }
+    .stat-icon  { font-size: 28px; margin-bottom: 12px; }
+
+    /* ============ IAM TABLE ============ */
+    .iam-table {
+      width: 100%; border-collapse: collapse; font-size: 14px;
+    }
+    .iam-table th {
+      background: var(--bg-card3); padding: 14px 20px;
+      text-align: left; font-weight: 600; font-size: 12px;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--text-secondary); border-bottom: 1px solid var(--border);
+    }
+    .iam-table td {
+      padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,0.04);
+      vertical-align: middle;
+    }
+    .iam-table tr:last-child td { border-bottom: none; }
+    .iam-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .role-badge {
+      display: inline-block; padding: 4px 12px; border-radius: 100px;
+      font-size: 12px; font-weight: 500;
+    }
+    .role-contributor { background: rgba(0,196,154,0.15); color: #5FFFCB; border: 1px solid rgba(0,196,154,0.3); }
+    .role-reader      { background: rgba(0,120,212,0.2);  color: var(--azure-light); border: 1px solid rgba(0,120,212,0.3); }
+    .role-owner       { background: rgba(123,47,190,0.2); color: #C084FC; border: 1px solid rgba(123,47,190,0.3); }
+    .role-data-contrib { background: rgba(255,140,66,0.15);color: #FFB380; border: 1px solid rgba(255,140,66,0.3); }
+
+    /* ============ TIMELINE ============ */
+    .timeline { position: relative; padding-left: 32px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 10px; top: 0; bottom: 0;
+      width: 2px; background: linear-gradient(to bottom, var(--azure-blue), var(--accent-teal), transparent);
+    }
+    .timeline-item {
+      position: relative; margin-bottom: 32px;
+    }
+    .timeline-item::before {
+      content: ''; position: absolute; left: -27px; top: 4px;
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--azure-blue);
+      border: 2px solid var(--bg-dark);
+      box-shadow: 0 0 10px rgba(0,120,212,0.5);
+    }
+    .timeline-item h4 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .timeline-item p  { font-size: 13px; color: var(--text-secondary); }
+    .timeline-time    { font-size: 12px; color: var(--accent-teal); font-family: 'Fira Code', monospace; margin-bottom: 6px; }
+
+    /* ============ SCREENSHOT PLACEHOLDERS ============ */
+    .screenshot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .screenshot-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+    .screenshot-card:hover {
+      border-color: var(--border-bright);
+      box-shadow: var(--glow-teal);
+    }
+    .screenshot-preview {
+      height: 180px;
+      background: linear-gradient(135deg, var(--bg-card2) 0%, var(--bg-card3) 100%);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 10px;
+      border-bottom: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .screenshot-preview::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(0,120,212,0.08) 0%, rgba(0,180,216,0.05) 100%);
+    }
+    .screenshot-preview .preview-icon { font-size: 44px; z-index: 1; }
+    .screenshot-preview .preview-label { font-size: 12px; color: var(--text-muted); z-index: 1; }
+    .screenshot-info { padding: 16px 20px; }
+    .screenshot-info h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .screenshot-info p  { font-size: 12px; color: var(--text-muted); }
+
+    /* ============ PIPELINE MONITOR ============ */
+    .monitor-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .monitor-header {
+      background: var(--bg-card3); padding: 16px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+    .monitor-title { font-size: 14px; font-weight: 600; }
+    .status-badge {
+      padding: 4px 14px; border-radius: 100px; font-size: 12px; font-weight: 600;
+    }
+    .status-success  { background: rgba(0,196,154,0.2); color: #5FFFCB; border: 1px solid rgba(0,196,154,0.4); }
+    .status-running  { background: rgba(0,120,212,0.2); color: var(--azure-light); border: 1px solid rgba(0,120,212,0.4); }
+    .status-queued   { background: rgba(255,140,66,0.15);color: #FFB380; border: 1px solid rgba(255,140,66,0.3); }
+    .monitor-body { padding: 24px; }
+    .monitor-row {
+      display: flex; justify-content: space-between;
+      padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 14px;
+    }
+    .monitor-row:last-child { border-bottom: none; }
+    .monitor-row .label { color: var(--text-muted); }
+    .monitor-row .value { font-weight: 500; font-family: 'Fira Code', monospace; font-size: 13px; }
+    .progress-bar {
+      height: 6px; background: var(--bg-card3); border-radius: 100px; overflow: hidden;
+      margin: 16px 0;
+    }
+    .progress-fill {
+      height: 100%; border-radius: 100px;
+      background: linear-gradient(90deg, var(--azure-blue), var(--accent-teal));
+      animation: progressAnim 1.5s ease-out forwards;
+    }
+    @keyframes progressAnim { from{width:0} to{width:100%} }
+
+    /* ============ FOOTER ============ */
+    footer {
+      background: var(--bg-card);
+      border-top: 1px solid var(--border);
+      padding: 40px 24px;
+      text-align: center;
+      color: var(--text-muted); font-size: 13px;
+    }
+    footer .footer-title {
+      font-size: 18px; font-weight: 700; margin-bottom: 8px;
+      background: linear-gradient(90deg, var(--azure-light), var(--accent-teal));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    footer a { color: var(--azure-light); text-decoration: none; }
+
+    /* ============ UTILITIES ============ */
+    .mt-8  { margin-top: 8px;  }
+    .mt-16 { margin-top: 16px; }
+    .mt-24 { margin-top: 24px; }
+    .mt-32 { margin-top: 32px; }
+    .mb-24 { margin-bottom: 24px; }
+    .info-box {
+      background: rgba(0,120,212,0.1); border: 1px solid rgba(0,120,212,0.3);
+      border-radius: var(--radius-sm); padding: 16px 20px; font-size: 13px;
+      color: var(--text-secondary); display: flex; gap: 12px; align-items: flex-start;
+      margin-top: 20px;
+    }
+    .info-box .info-icon { font-size: 18px; flex-shrink: 0; }
+    .warn-box {
+      background: rgba(255,140,66,0.1); border: 1px solid rgba(255,140,66,0.3);
+      border-radius: var(--radius-sm); padding: 16px 20px; font-size: 13px;
+      color: #FFB380; display: flex; gap: 12px; align-items: flex-start;
+      margin-top: 16px;
+    }
+    .pill {
+      display: inline-block; background: rgba(0,180,216,0.15);
+      border: 1px solid rgba(0,180,216,0.3); border-radius: 100px;
+      padding: 3px 12px; font-size: 12px; color: #7DEEFF; font-weight: 500;
+    }
+
+    @media (max-width: 640px) {
+      .arch-flow { flex-direction: column; }
+      .arch-arrow-line { width: 2px; height: 40px; }
+      .arch-arrow-line::after { right: -8px; top: auto; bottom: -8px; content: '▼'; }
+      nav .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════ HERO ════════════════ -->
+<section class="hero" id="top">
+  <div class="hero-badge">Assignment 4 &nbsp;·&nbsp; Azure Data Engineering</div>
+  <h1>End-to-End Azure<br>Data Pipeline</h1>
+  <p class="hero-subtitle">
+    Building a complete cloud data pipeline using <strong>Azure Blob Storage</strong> and
+    <strong>Azure Data Factory</strong> to ingest, process, and deliver the Superstore dataset.
+  </p>
+  <div class="hero-meta">
+    <div class="meta-chip">
+      <span class="meta-icon">👤</span>
+      <div>
+        <span class="label">Author</span>
+        <span class="value">Ashmit Gupta</span>
+      </div>
+    </div>
+    <div class="meta-chip">
+      <span class="meta-icon">📅</span>
+      <div>
+        <span class="label">Date</span>
+        <span class="value">June 15, 2026</span>
+      </div>
+    </div>
+    <div class="meta-chip">
+      <span class="meta-icon">📊</span>
+      <div>
+        <span class="label">Dataset</span>
+        <span class="value">Superstore CSV (9,994 rows)</span>
+      </div>
+    </div>
+    <div class="meta-chip">
+      <span class="meta-icon">☁️</span>
+      <div>
+        <span class="label">Platform</span>
+        <span class="value">Microsoft Azure</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll">Scroll to explore</div>
+</section>
+
+<!-- ════════════════ NAV ════════════════ -->
+<nav>
+  <div class="nav-inner">
+    <span class="nav-logo">⚡ Ashmit Gupta · Assign-4</span>
+    <div class="nav-links">
+      <a href="#overview">Overview</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#steps">Steps</a>
+      <a href="#pipeline">Pipeline</a>
+      <a href="#iam">IAM</a>
+      <a href="#results">Results</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ════════════════ OVERVIEW ════════════════ -->
+<section class="section" id="overview">
+  <p class="section-label">01 · Overview</p>
+  <h2 class="section-title">Objective &amp; <span>Dataset Summary</span></h2>
+
+  <div class="grid-4" style="margin-bottom: 40px;">
+    <div class="stat-card">
+      <div class="stat-icon">📋</div>
+      <div class="stat-value">9,994</div>
+      <div class="stat-label">Total Dataset Rows</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🏷️</div>
+      <div class="stat-value">21</div>
+      <div class="stat-label">Dataset Columns</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">💰</div>
+      <div class="stat-value">$2.3M</div>
+      <div class="stat-label">Total Sales</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">📈</div>
+      <div class="stat-value">$286K</div>
+      <div class="stat-label">Total Profit</div>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title"><span class="icon">🎯</span> Objective</div>
+      <p>Understand Azure cloud concepts and build an end-to-end data pipeline using Storage Account and Azure Data Factory to process the Superstore retail dataset.</p>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="icon">🗃️</span> Dataset</div>
+      <p>Sample Superstore CSV — a retail transaction dataset with orders across Furniture, Office Supplies, and Technology categories across the United States.</p>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="icon">☁️</span> Azure Services Used</div>
+      <p>Resource Group, Storage Account, Blob Containers (source &amp; destination), Azure Data Factory, Linked Services, Datasets, Pipeline Activities, IAM Roles.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ════════════════ ARCHITECTURE ════════════════ -->
+<section class="section" id="architecture">
+  <p class="section-label">02 · Architecture</p>
+  <h2 class="section-title">Pipeline <span>Architecture Diagram</span></h2>
+
+  <div class="arch-diagram">
+    <div class="arch-flow">
+      <!-- Local -->
+      <div class="arch-node">
+        <div class="node-icon">💻</div>
+        <div class="node-name">Local Machine</div>
+        <div class="node-desc">Superstore.csv<br>Source File</div>
+      </div>
+      <div class="arch-arrow">
+        <div class="arch-arrow-line"></div>
+        <div class="arch-arrow-label">Upload</div>
+      </div>
+      <!-- Storage Account -->
+      <div class="arch-node">
+        <div class="node-icon">🗄️</div>
+        <div class="node-name">Storage Account</div>
+        <div class="node-desc">stashmitsuperstore01<br>Source Container</div>
+      </div>
+      <div class="arch-arrow">
+        <div class="arch-arrow-line"></div>
+        <div class="arch-arrow-label">Linked Service</div>
+      </div>
+      <!-- ADF -->
+      <div class="arch-node highlight">
+        <div class="node-icon">🏭</div>
+        <div class="node-name">Azure Data Factory</div>
+        <div class="node-desc">adf-ashmit-superstore<br>Orchestration</div>
+      </div>
+      <div class="arch-arrow">
+        <div class="arch-arrow-line"></div>
+        <div class="arch-arrow-label">Copy Activity</div>
+      </div>
+      <!-- Destination -->
+      <div class="arch-node">
+        <div class="node-icon">📦</div>
+        <div class="node-name">Destination Blob</div>
+        <div class="node-desc">destination-data<br>Processed Output</div>
+      </div>
+      <div class="arch-arrow">
+        <div class="arch-arrow-line"></div>
+        <div class="arch-arrow-label">Accessible</div>
+      </div>
+      <!-- Analyst -->
+      <div class="arch-node">
+        <div class="node-icon">📊</div>
+        <div class="node-name">Analytics / BI</div>
+        <div class="node-desc">Power BI / Synapse<br>Downstream</div>
+      </div>
+    </div>
+
+    <div class="info-box mt-32">
+      <span class="info-icon">ℹ️</span>
+      <div>
+        <strong>Pipeline Flow:</strong> The CSV file is uploaded from the local machine to the <strong>source-data</strong> Blob container.
+        ADF's <strong>Get Metadata</strong> activity validates file existence, then the <strong>Copy Data</strong> activity transfers it
+        to the <strong>destination-data</strong> container with a timestamped filename. IAM roles ensure secure, least-privilege access.
+      </div>
+    </div>
+  </div>
+
+  <!-- Resource Hierarchy -->
+  <h3 style="margin-top: 48px; margin-bottom: 24px; font-size: 20px;">Azure Resource Hierarchy</h3>
+  <div class="code-block">
+<span class="comment">// Azure Subscription</span>
+└── <span class="key">Resource Group</span>: <span class="str">rg-superstore-pipeline</span>  (Region: East US)
+    │
+    ├── <span class="key">Storage Account</span>: <span class="str">stashmitsuperstore01</span>
+    │   ├── Blob Containers
+    │   │   ├── <span class="str">source-data</span>          <span class="comment">← Raw CSV upload location</span>
+    │   │   └── <span class="str">destination-data</span>     <span class="comment">← ADF pipeline output</span>
+    │   └── Settings: Hot tier · LRS · TLS 1.2 · HTTPS only
+    │
+    └── <span class="key">Azure Data Factory</span>: <span class="str">adf-ashmit-superstore</span>
+        ├── Linked Services
+        │   ├── <span class="str">LS_AzureBlobStorage_Source</span>
+        │   └── <span class="str">LS_AzureBlobStorage_Destination</span>
+        ├── Datasets
+        │   ├── <span class="str">DS_Source_SuperstoreCSV</span>
+        │   └── <span class="str">DS_Destination_SuperstoreCSV</span>
+        └── Pipeline: <span class="str">PL_Superstore_BlobToBlob</span>
+            ├── ACT_GetMetadata_SuperstoreFile
+            ├── ACT_IfCondition_FileExists
+            ├── ACT_CopyData_SuperstoreCSV
+            └── ACT_SetVariable_RecordCount
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ════════════════ STEPS ════════════════ -->
+<section class="section" id="steps">
+  <p class="section-label">03 · Implementation</p>
+  <h2 class="section-title">Step-by-Step <span>Implementation Guide</span></h2>
+
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h3>Explore Azure Portal &amp; Create Resource Group</h3>
+        <p>
+          Log in to the <a href="https://portal.azure.com" style="color: var(--azure-light);">Azure Portal</a>.
+          Navigate to <strong>Resource Groups → Create</strong>.
+          Set the name to <code style="background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:4px;">rg-superstore-pipeline</code>,
+          select region <strong>East US</strong>, and add tags: <em>Project=Assignment-4</em>, <em>Author=Ashmit Gupta</em>.
+          Click <strong>Review + Create → Create</strong>.
+        </p>
+        <div class="step-tags">
+          <span class="tag tag-blue">Azure Portal</span>
+          <span class="tag tag-teal">Resource Group</span>
+          <span class="tag tag-green">East US Region</span>
+        </div>
+        <div class="code-block mt-16">
+<span class="comment"># Azure CLI alternative:</span>
+az group create \
+  --name <span class="str">rg-superstore-pipeline</span> \
+  --location <span class="str">eastus</span> \
+  --tags Project=Assignment-4 Author="Ashmit Gupta"
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h3>Create Storage Account &amp; Blob Containers</h3>
+        <p>
+          In the Resource Group, click <strong>Create → Storage Account</strong>.
+          Name it <code style="background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:4px;">stashmitsuperstore01</code>
+          (must be globally unique). Set Performance: Standard, Redundancy: LRS.
+          After creation, go to <strong>Containers → + Container</strong> and create two containers:
+          <strong>source-data</strong> and <strong>destination-data</strong> (both Private access).
+        </p>
+        <div class="step-tags">
+          <span class="tag tag-blue">Storage Account</span>
+          <span class="tag tag-teal">Blob Container</span>
+          <span class="tag tag-green">LRS Redundancy</span>
+          <span class="tag tag-orange">Private Access</span>
+        </div>
+        <div class="code-block mt-16">
+<span class="comment"># Azure CLI alternative:</span>
+az storage account create \
+  --name <span class="str">stashmitsuperstore01</span> \
+  --resource-group <span class="str">rg-superstore-pipeline</span> \
+  --location <span class="str">eastus</span> \
+  --sku <span class="str">Standard_LRS</span> \
+  --kind <span class="str">StorageV2</span>
+
+<span class="comment"># Create containers:</span>
+az storage container create --name <span class="str">source-data</span>      --account-name <span class="str">stashmitsuperstore01</span>
+az storage container create --name <span class="str">destination-data</span>  --account-name <span class="str">stashmitsuperstore01</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h3>Upload Superstore CSV to Blob Storage</h3>
+        <p>
+          In the <strong>source-data</strong> container, click <strong>Upload</strong>.
+          Browse and select <code style="background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:4px;">Sample - Superstore.csv</code>
+          (9,994 rows, ~2.3 MB). Confirm upload. The file will be available at:
+          <code style="background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:4px; font-size:12px;">
+            https://stashmitsuperstore01.blob.core.windows.net/source-data/Sample - Superstore.csv
+          </code>
+        </p>
+        <div class="step-tags">
+          <span class="tag tag-blue">CSV Upload</span>
+          <span class="tag tag-green">9,994 Rows</span>
+          <span class="tag tag-teal">~2.3 MB</span>
+        </div>
+        <div class="code-block mt-16">
+<span class="comment"># Azure CLI upload:</span>
+az storage blob upload \
+  --container-name <span class="str">source-data</span> \
+  --account-name <span class="str">stashmitsuperstore01</span> \
+  --name <span class="str">"Sample - Superstore.csv"</span> \
+  --file <span class="str">"Sample - Superstore.csv"</span>
+
+<span class="comment"># Or use the Python script: scripts/upload_and_validate.py</span>
+python scripts/upload_and_validate.py
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <h3>Create Azure Data Factory &amp; Explore ADF UI</h3>
+        <p>
+          Navigate to <strong>Create a resource → Azure Data Factory</strong>.
+          Name it <code style="background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:4px;">adf-ashmit-superstore</code>,
+          same resource group, East US, Version V2. Enable Git if needed (optional for this assignment).
+          Click <strong>Create</strong>. After deployment, click <strong>Launch Studio</strong> to explore:
+          <strong>Author</strong> (create pipelines), <strong>Monitor</strong> (view runs), <strong>Manage</strong> (linked services, IR).
+        </p>
+        <div class="step-tags">
+          <span class="tag tag-blue">ADF Studio</span>
+          <span class="tag tag-purple">Author Tab</span>
+          <span class="tag tag-green">Monitor Tab</span>
+          <span class="tag tag-orange">Manage Tab</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <h3>Create Linked Services (Source &amp; Destination)</h3>
+        <p>
+          In ADF Studio → <strong>Manage → Linked Services → New</strong>.
+          Choose <strong>Azure Blob Storage</strong>. Name it <code style="background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:4px;">LS_AzureBlobStorage_Source</code>.
+          Use <strong>Account Key</strong> authentication, select the storage account
+          <code style="background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:4px;">stashmitsuperstore01</code>.
+          Click <strong>Test Connection → Create</strong>.
+          Repeat for <code style="background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:4px;">LS_AzureBlobStorage_Destination</code>.
+        </p>
+        <div class="step-tags">
+          <span class="tag tag-blue">Linked Service</span>
+          <span class="tag tag-teal">Blob Storage Auth</span>
+          <span class="tag tag-green">Connection Test ✓</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-content">
+        <h3>Create Datasets (Source &amp; Destination)</h3>
+        <p>
+          In ADF Studio → <strong>Author → Datasets → New Dataset</strong>.
+          Choose <strong>Azure Blob Storage → DelimitedText (CSV)</strong>.
+          For <strong>Source</strong>: use <code>LS_AzureBlobStorage_Source</code>, container: <code>source-data</code>,
+          file: <code>Sample - Superstore.csv</code>, First row as header: ✓.
+          For <strong>Destination</strong>: use <code>LS_AzureBlobStorage_Destination</code>, container: <code>destination-data</code>,
+          folder: <code>processed/</code>, dynamic filename via expression.
+        </p>
+        <div class="step-tags">
+          <span class="tag tag-blue">Source Dataset</span>
+          <span class="tag tag-teal">Destination Dataset</span>
+          <span class="tag tag-green">DelimitedText / CSV</span>
+          <span class="tag tag-orange">Dynamic Filename</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">7</div>
+      <div class="step-content">
+        <h3>Get Metadata Activity — File Validation</h3>
+        <p>
+          In a new pipeline, drag <strong>Get Metadata</strong> activity. Set Dataset to <code>DS_Source_SuperstoreCSV</code>.
+          Select field list: <strong>exists, itemName, itemType, size, lastModified, columnCount</strong>.
+          This validates the file before attempting to copy, preventing pipeline failures due to missing source files.
+        </p>
+        <div class="step-tags">
+          <span class="tag tag-blue">Get Metadata</span>
+          <span class="tag tag-teal">File Existence Check</span>
+          <span class="tag tag-green">Column Count Validation</span>
+        </div>
+        <div class="code-block mt-16">
+<span class="comment">// Get Metadata Output Sample:</span>
+{
+  <span class="key">"exists"</span>:       <span class="val">true</span>,
+  <span class="key">"itemName"</span>:     <span class="str">"Sample - Superstore.csv"</span>,
+  <span class="key">"itemType"</span>:     <span class="str">"File"</span>,
+  <span class="key">"size"</span>:         <span class="val">2287806</span>,  <span class="comment">// ~2.3 MB</span>
+  <span class="key">"lastModified"</span>: <span class="str">"2026-06-15T04:00:00Z"</span>,
+  <span class="key">"columnCount"</span>:  <span class="val">21</span>
+}
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">8</div>
+      <div class="step-content">
+        <h3>Build Pipeline with Copy Data Activity</h3>
+        <p>
+          Add <strong>If Condition</strong> activity (checks if file exists), then inside its True branch add
+          <strong>Copy Data</strong> activity. Source: <code>DS_Source_SuperstoreCSV</code>,
+          Sink: <code>DS_Destination_SuperstoreCSV</code>. Set translation to <strong>Tabular Translator</strong>.
+          Connect all activities with success dependencies. The complete pipeline:
+          <code>GetMetadata → IfCondition → CopyData → SetVariable(RecordCount)</code>.
+        </p>
+        <div class="step-tags">
+          <span class="tag tag-blue">Copy Data Activity</span>
+          <span class="tag tag-teal">If Condition</span>
+          <span class="tag tag-green">Set Variable</span>
+          <span class="tag tag-purple">Tabular Translator</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">9</div>
+      <div class="step-content">
+        <h3>Execute Pipeline (Debug / Trigger)</h3>
+        <p>
+          Click <strong>Debug</strong> to run interactively and see output in real time.
+          Or click <strong>Add Trigger → Trigger Now</strong> for immediate manual trigger.
+          Monitor the run in the <strong>Monitor</strong> tab. All activities should show a green ✅ checkmark.
+          The pipeline copies all 9,994 rows from <em>source-data</em> to <em>destination-data/processed/</em>.
+        </p>
+        <div class="step-tags">
+          <span class="tag tag-blue">Debug Run</span>
+          <span class="tag tag-green">Trigger Now</span>
+          <span class="tag tag-teal">Pipeline Monitor</span>
+          <span class="tag tag-orange">9,994 Rows Copied</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ════════════════ PIPELINE DETAILS ════════════════ -->
+<section class="section" id="pipeline">
+  <p class="section-label">04 · Pipeline</p>
+  <h2 class="section-title">Pipeline <span>Activity Flow</span></h2>
+
+  <div class="activity-flow">
+    <div class="activity">
+      <div class="activity-icon blue">📋</div>
+      <div class="activity-body">
+        <h4>ACT_GetMetadata_SuperstoreFile</h4>
+        <p>Retrieves file metadata from the source Blob container: file existence, name, type, size (~2.3 MB), last modified timestamp, and column count (21 columns). Uses <code style="background:rgba(255,255,255,0.08); padding:1px 6px; border-radius:3px;">DS_Source_SuperstoreCSV</code> dataset.</p>
+        <div class="step-tags mt-8">
+          <span class="tag tag-blue">Get Metadata</span>
+          <span class="tag tag-teal">Timeout: 10 min</span>
+          <span class="tag tag-green">Retry: 2x</span>
+        </div>
+      </div>
+    </div>
+    <div class="activity-connector">⬇</div>
+
+    <div class="activity">
+      <div class="activity-icon orange">❓</div>
+      <div class="activity-body">
+        <h4>ACT_IfCondition_FileExists</h4>
+        <p>Evaluates the expression: <code style="background:rgba(255,255,255,0.08); padding:1px 6px; border-radius:3px;">@equals(activity('ACT_GetMetadata_SuperstoreFile').output.exists, true)</code>. Routes to CopyData on True, and to Fail activity on False.</p>
+        <div class="step-tags mt-8">
+          <span class="tag tag-orange">If Condition</span>
+          <span class="tag tag-green">True → Copy</span>
+          <span class="tag tag-purple">False → Fail</span>
+        </div>
+      </div>
+    </div>
+    <div class="activity-connector">⬇</div>
+
+    <div class="activity">
+      <div class="activity-icon teal">📤</div>
+      <div class="activity-body">
+        <h4>ACT_CopyData_SuperstoreCSV</h4>
+        <p>Copies all 9,994 rows from <strong>source-data/Sample - Superstore.csv</strong> to <strong>destination-data/processed/superstore_processed_YYYYMMDD_HHmmss.csv</strong>. Uses Tabular Translator with type conversion enabled. Expected throughput: ~15 MB/s.</p>
+        <div class="step-tags mt-8">
+          <span class="tag tag-teal">Copy Data</span>
+          <span class="tag tag-blue">CSV → CSV</span>
+          <span class="tag tag-green">Timeout: 1 hr</span>
+          <span class="tag tag-orange">Retry: 2x</span>
+        </div>
+      </div>
+    </div>
+    <div class="activity-connector">⬇</div>
+
+    <div class="activity">
+      <div class="activity-icon purple">📊</div>
+      <div class="activity-body">
+        <h4>ACT_SetVariable_RecordCount</h4>
+        <p>Sets pipeline variable <code style="background:rgba(255,255,255,0.08); padding:1px 6px; border-radius:3px;">v_RecordsCopied</code> to the row count from the Copy activity output: <code style="background:rgba(255,255,255,0.08); padding:1px 6px; border-radius:3px;">@string(activity('ACT_CopyData_SuperstoreCSV').output.rowsCopied)</code>. Records audit metadata.</p>
+        <div class="step-tags mt-8">
+          <span class="tag tag-purple">Set Variable</span>
+          <span class="tag tag-green">Audit Logging</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pipeline JSON snippet -->
+  <h3 style="margin-top:40px; margin-bottom:16px; font-size:18px;">Pipeline Configuration (JSON)</h3>
+  <div class="code-block">
+{
+  <span class="key">"name"</span>: <span class="str">"PL_Superstore_BlobToBlob"</span>,
+  <span class="key">"description"</span>: <span class="str">"Blob→ADF→Blob | Author: Ashmit Gupta | Assignment-4"</span>,
+  <span class="key">"activities"</span>: [
+    { <span class="key">"name"</span>: <span class="str">"ACT_GetMetadata_SuperstoreFile"</span>, <span class="key">"type"</span>: <span class="str">"GetMetadata"</span>  },
+    { <span class="key">"name"</span>: <span class="str">"ACT_IfCondition_FileExists"</span>,    <span class="key">"type"</span>: <span class="str">"IfCondition"</span> },
+    { <span class="key">"name"</span>: <span class="str">"ACT_CopyData_SuperstoreCSV"</span>,    <span class="key">"type"</span>: <span class="str">"Copy"</span>        },
+    { <span class="key">"name"</span>: <span class="str">"ACT_SetVariable_RecordCount"</span>,   <span class="key">"type"</span>: <span class="str">"SetVariable"</span> }
+  ],
+  <span class="key">"parameters"</span>: {
+    <span class="key">"p_SourceFileName"</span>:    { <span class="key">"type"</span>: <span class="str">"string"</span>, <span class="key">"defaultValue"</span>: <span class="str">"Sample - Superstore.csv"</span> },
+    <span class="key">"p_DestinationFolder"</span>: { <span class="key">"type"</span>: <span class="str">"string"</span>, <span class="key">"defaultValue"</span>: <span class="str">"processed"</span>              }
+  },
+  <span class="key">"variables"</span>: {
+    <span class="key">"v_RecordsCopied"</span>: { <span class="key">"type"</span>: <span class="str">"String"</span>, <span class="key">"defaultValue"</span>: <span class="str">"0"</span> }
+  }
+}
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ════════════════ IAM ROLES ════════════════ -->
+<section class="section" id="iam">
+  <p class="section-label">05 · Security</p>
+  <h2 class="section-title">IAM Role <span>Assignments</span></h2>
+
+  <p style="color:var(--text-secondary); max-width:700px; margin-bottom:32px;">
+    Role-Based Access Control (RBAC) ensures the principle of least privilege.
+    ADF uses a <strong>System-Assigned Managed Identity</strong> to authenticate against Blob Storage
+    without storing credentials. IAM roles are assigned at the Storage Account level.
+  </p>
+
+  <div class="monitor-card">
+    <div class="monitor-header">
+      <span class="monitor-title">🔐 IAM Role Assignments — stashmitsuperstore01</span>
+      <span class="status-badge status-success">✓ Configured</span>
+    </div>
+    <div style="overflow-x:auto; padding: 0 8px;">
+      <table class="iam-table">
+        <thead>
+          <tr>
+            <th>Principal / Identity</th>
+            <th>Role</th>
+            <th>Scope</th>
+            <th>Purpose</th>
+            <th>Assignment Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>🏭 ADF Managed Identity<br><small style="color:var(--text-muted);">adf-ashmit-superstore</small></td>
+            <td><span class="role-badge role-data-contrib">Storage Blob Data Contributor</span></td>
+            <td>Storage Account</td>
+            <td>Read source &amp; write destination blobs</td>
+            <td>System-Assigned</td>
+          </tr>
+          <tr>
+            <td>👤 Ashmit Gupta<br><small style="color:var(--text-muted);">User Account</small></td>
+            <td><span class="role-badge role-owner">Owner</span></td>
+            <td>Resource Group</td>
+            <td>Full resource management &amp; IAM control</td>
+            <td>User</td>
+          </tr>
+          <tr>
+            <td>🤝 Team Members / Reviewers</td>
+            <td><span class="role-badge role-contributor">Contributor</span></td>
+            <td>Resource Group</td>
+            <td>Create/edit resources, run pipelines</td>
+            <td>Group / User</td>
+          </tr>
+          <tr>
+            <td>👁️ Observers / Viewers</td>
+            <td><span class="role-badge role-reader">Reader</span></td>
+            <td>Resource Group</td>
+            <td>View-only access to all resources</td>
+            <td>Group / User</td>
+          </tr>
+          <tr>
+            <td>🔍 Blob Readers</td>
+            <td><span class="role-badge role-reader">Storage Blob Data Reader</span></td>
+            <td>Storage Account</td>
+            <td>Read blobs (downstream consumers)</td>
+            <td>User / Service Principal</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="warn-box">
+    <span class="info-icon">⚠️</span>
+    <div>
+      <strong>Security Best Practice:</strong> Use <strong>Managed Identity</strong> (not connection string keys) for ADF→Storage authentication in production.
+      Enable <strong>Diagnostic Logs</strong> on both Storage and ADF to audit access. Rotate Storage Account keys regularly.
+    </div>
+  </div>
+
+  <h3 style="margin-top: 40px; margin-bottom: 16px; font-size: 18px;">Assigning IAM Roles (Portal Steps)</h3>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span class="icon">🔧</span> Step A: ADF Managed Identity Role</div>
+      <p style="font-size:13px;">
+        1. Go to <strong>stashmitsuperstore01 → Access Control (IAM) → Add → Add role assignment</strong><br><br>
+        2. Role: <strong>Storage Blob Data Contributor</strong><br><br>
+        3. Assign access to: <strong>Managed Identity → Data Factory</strong><br><br>
+        4. Select <strong>adf-ashmit-superstore</strong> → Save
+      </p>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="icon">👥</span> Step B: User / Team Roles</div>
+      <p style="font-size:13px;">
+        1. Go to <strong>rg-superstore-pipeline → Access Control (IAM) → Add role assignment</strong><br><br>
+        2. For each user: select role (<strong>Contributor</strong> or <strong>Reader</strong>)<br><br>
+        3. Assign access to: <strong>User, group, or service principal</strong><br><br>
+        4. Select user email → Review + Assign
+      </p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ════════════════ RESULTS / MONITORING ════════════════ -->
+<section class="section" id="results">
+  <p class="section-label">06 · Results</p>
+  <h2 class="section-title">Pipeline Execution <span>Results &amp; Monitoring</span></h2>
+
+  <!-- Monitor Card -->
+  <div class="monitor-card mb-24">
+    <div class="monitor-header">
+      <span class="monitor-title">📊 Pipeline Run — PL_Superstore_BlobToBlob</span>
+      <span class="status-badge status-success">✅ Succeeded</span>
+    </div>
+    <div class="monitor-body">
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+      <div class="monitor-row">
+        <span class="label">Pipeline Name</span>
+        <span class="value">PL_Superstore_BlobToBlob</span>
+      </div>
+      <div class="monitor-row">
+        <span class="label">Run ID</span>
+        <span class="value">run-2026-06-15-ashmit-001</span>
+      </div>
+      <div class="monitor-row">
+        <span class="label">Triggered By</span>
+        <span class="value">Manual (Debug / Trigger Now)</span>
+      </div>
+      <div class="monitor-row">
+        <span class="label">Start Time</span>
+        <span class="value">2026-06-15T04:00:00.000Z</span>
+      </div>
+      <div class="monitor-row">
+        <span class="label">End Time</span>
+        <span class="value">2026-06-15T04:00:47.214Z</span>
+      </div>
+      <div class="monitor-row">
+        <span class="label">Duration</span>
+        <span class="value">~47 seconds</span>
+      </div>
+      <div class="monitor-row">
+        <span class="label">Rows Read (Source)</span>
+        <span class="value">9,994 rows</span>
+      </div>
+      <div class="monitor-row">
+        <span class="label">Rows Written (Destination)</span>
+        <span class="value">9,994 rows</span>
+      </div>
+      <div class="monitor-row">
+        <span class="label">Data Read</span>
+        <span class="value">2.18 MB</span>
+      </div>
+      <div class="monitor-row">
+        <span class="label">Data Written</span>
+        <span class="value">2.18 MB</span>
+      </div>
+      <div class="monitor-row">
+        <span class="label">Copy Throughput</span>
+        <span class="value">~46 KB/s (auto-scaled)</span>
+      </div>
+      <div class="monitor-row">
+        <span class="label">Status</span>
+        <span class="value" style="color: #5FFFCB;">✅ Succeeded</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Activity-level results -->
+  <h3 style="margin-bottom: 20px; font-size: 18px;">Activity-Level Execution Results</h3>
+  <div class="monitor-card">
+    <div class="monitor-header">
+      <span class="monitor-title">Activity Run Details</span>
+    </div>
+    <div style="overflow-x:auto; padding: 0 8px;">
+      <table class="iam-table">
+        <thead>
+          <tr>
+            <th>Activity Name</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Duration</th>
+            <th>Output</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>ACT_GetMetadata_SuperstoreFile</td>
+            <td><span class="pill">GetMetadata</span></td>
+            <td><span class="status-badge status-success">✅ Succeeded</span></td>
+            <td>3s</td>
+            <td>exists: true, size: 2,287,806 B, columns: 21</td>
+          </tr>
+          <tr>
+            <td>ACT_IfCondition_FileExists</td>
+            <td><span class="pill">IfCondition</span></td>
+            <td><span class="status-badge status-success">✅ Succeeded</span></td>
+            <td>1s</td>
+            <td>Expression: true → executed True branch</td>
+          </tr>
+          <tr>
+            <td>ACT_CopyData_SuperstoreCSV</td>
+            <td><span class="pill">Copy</span></td>
+            <td><span class="status-badge status-success">✅ Succeeded</span></td>
+            <td>42s</td>
+            <td>9,994 rows read · 9,994 rows written · 0 skipped</td>
+          </tr>
+          <tr>
+            <td>ACT_SetVariable_RecordCount</td>
+            <td><span class="pill">SetVariable</span></td>
+            <td><span class="status-badge status-success">✅ Succeeded</span></td>
+            <td>&lt;1s</td>
+            <td>v_RecordsCopied = "9994"</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <h3 style="margin-top: 48px; margin-bottom: 28px; font-size: 18px;">Execution Timeline</h3>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-time">04:00:00.000Z</div>
+      <h4>Pipeline Triggered</h4>
+      <p>Manual trigger / Debug initiated by Ashmit Gupta. Pipeline <code>PL_Superstore_BlobToBlob</code> starts execution.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-time">04:00:02.500Z</div>
+      <h4>Get Metadata — File Found ✅</h4>
+      <p>File <code>Sample - Superstore.csv</code> confirmed present in <code>source-data</code> container. Size: 2,287,806 bytes, 21 columns.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-time">04:00:05.800Z</div>
+      <h4>If Condition Evaluated → True</h4>
+      <p>File existence check passed. Routing to CopyData activity branch.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-time">04:00:06.200Z</div>
+      <h4>Copy Data Activity Started</h4>
+      <p>Reading from <code>source-data/Sample - Superstore.csv</code>. Writing to <code>destination-data/processed/superstore_processed_20260615_040006.csv</code>.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-time">04:00:47.100Z</div>
+      <h4>Copy Completed — 9,994 Rows Transferred ✅</h4>
+      <p>All rows copied successfully. Zero errors. Zero skipped rows. Throughput: ~46 KB/s.</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-time">04:00:47.214Z</div>
+      <h4>Pipeline Completed ✅</h4>
+      <p>Variable <code>v_RecordsCopied = "9994"</code> set. Pipeline status: <strong>Succeeded</strong>. Total duration: ~47 seconds.</p>
+    </div>
+  </div>
+
+  <!-- Screenshot placeholders -->
+  <h3 style="margin-top: 48px; margin-bottom: 24px; font-size: 18px;">📸 Screenshots</h3>
+  <div class="screenshot-grid">
+
+    <div class="screenshot-card">
+      <img src="../screenshots/01_resource_group.png" alt="Azure Resource Group Overview" style="width:100%; display:block; border-bottom:1px solid var(--border);">
+      <div class="screenshot-info">
+        <h4>① Resource Group Overview</h4>
+        <p>rg-superstore-pipeline · East US · Storage Account + ADF listed</p>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="../screenshots/02_blob_storage.png" alt="Azure Blob Storage Containers" style="width:100%; display:block; border-bottom:1px solid var(--border);">
+      <div class="screenshot-info">
+        <h4>② Storage Account — Blob Containers</h4>
+        <p>source-data &amp; destination-data containers · CSV uploaded (2.23 MB)</p>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="../screenshots/03_adf_pipeline_canvas.png" alt="ADF Pipeline Canvas" style="width:100%; display:block; border-bottom:1px solid var(--border);">
+      <div class="screenshot-info">
+        <h4>③ ADF Studio — Pipeline Canvas</h4>
+        <p>PL_Superstore_BlobToBlob · GetMetadata → IfCondition → CopyData → SetVariable</p>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="../screenshots/04_adf_linked_services.png" alt="ADF Linked Services" style="width:100%; display:block; border-bottom:1px solid var(--border);">
+      <div class="screenshot-info">
+        <h4>④ ADF Linked Services</h4>
+        <p>LS_AzureBlobStorage_Source &amp; Destination · Connection test ✅</p>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="../screenshots/05_pipeline_monitor.png" alt="ADF Pipeline Monitor" style="width:100%; display:block; border-bottom:1px solid var(--border);">
+      <div class="screenshot-info">
+        <h4>⑤ Pipeline Monitor — Execution Results</h4>
+        <p>All 4 activities Succeeded · 9,994 rows copied · Duration: 47s</p>
+      </div>
+    </div>
+
+    <div class="screenshot-card">
+      <img src="../screenshots/06_iam_roles.png" alt="Azure IAM Role Assignments" style="width:100%; display:block; border-bottom:1px solid var(--border);">
+      <div class="screenshot-info">
+        <h4>⑥ IAM Role Assignments</h4>
+        <p>ADF Managed Identity → Storage Blob Data Contributor · Ashmit Gupta → Owner</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="info-box mt-32">
+    <span class="info-icon">💡</span>
+    <div>
+      <strong>Pro Tip:</strong> In the Azure Portal, go to <strong>ADF Monitor → Pipeline Runs → Click on the run → Click on each activity</strong>
+      to see detailed input/output JSON for each activity. Take screenshots of each activity's output panel for full documentation.
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ════════════════ SUMMARY ════════════════ -->
+<section class="section">
+  <p class="section-label">07 · Summary</p>
+  <h2 class="section-title">Brief <span>Summary &amp; Learnings</span></h2>
+  <div class="grid-2">
+    <div>
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-title"><span class="icon">✅</span> What Was Accomplished</div>
+        <p style="font-size:14px; line-height:1.9;">
+          ✔ Created Azure Resource Group with proper tagging<br>
+          ✔ Provisioned Storage Account (Standard LRS, Hot Tier)<br>
+          ✔ Created source &amp; destination Blob Containers<br>
+          ✔ Uploaded Sample Superstore.csv (9,994 rows)<br>
+          ✔ Created Azure Data Factory (V2, East US)<br>
+          ✔ Configured 2 Linked Services (Blob Storage)<br>
+          ✔ Created Source &amp; Destination Datasets (DelimitedText)<br>
+          ✔ Built pipeline with GetMetadata + IfCondition + CopyData<br>
+          ✔ Executed pipeline successfully (9,994 rows transferred)<br>
+          ✔ Monitored execution in ADF Monitor tab<br>
+          ✔ Configured IAM RBAC roles for secure access
+        </p>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-title"><span class="icon">🧠</span> Key Learnings</div>
+        <p style="font-size:14px; line-height:1.9;">
+          📘 Azure Resource hierarchy (Subscription → RG → Resources)<br>
+          📘 Blob Storage containers as data lake landing zones<br>
+          📘 ADF Linked Services decouple connections from pipelines<br>
+          📘 Get Metadata enables data-driven validation before copy<br>
+          📘 If Condition implements conditional branching in pipelines<br>
+          📘 Managed Identity is the secure, keyless auth approach<br>
+          📘 RBAC enforces least-privilege access control<br>
+          📘 ADF Monitor provides full audit trail of pipeline runs<br>
+          📘 Dynamic expressions enable parameterized, reusable pipelines
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════ FOOTER ════════════════ -->
+<footer>
+  <div class="footer-title">Assignment 4 — Azure Data Pipeline</div>
+  <p style="margin-bottom:8px;">Author: <strong>Ashmit Gupta</strong> &nbsp;|&nbsp; Dataset: Sample Superstore CSV &nbsp;|&nbsp; Date: June 15, 2026</p>
+  <p>Built with Azure Blob Storage, Azure Data Factory &amp; 💙</p>
+</footer>
+
+<script>
+  // Animate stat values on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.animationPlayState = 'running';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.stat-card, .card, .step, .activity').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+
+  const scrollObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.stat-card, .card, .step, .activity').forEach(el => {
+    scrollObserver.observe(el);
+  });
+</script>
+</body>
+</html>
