@@ -1,0 +1,779 @@
+﻿Γ£à Database created and sample data loaded.
+
+
+======================================================================
+  Section A ΓÇö SQL Basics (SELECT, Constraints, Primary Keys)
+======================================================================
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q1. All columns and rows from customers
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT * FROM customers;
+
+customer_id | first_name | last_name | email              | city      | state       | join_date  | is_premium
+------------+------------+-----------+--------------------+-----------+-------------+------------+-----------
+101         | Aarav      | Sharma    | aarav.s@email.com  | Mumbai    | Maharashtra | 2024-01-15 | 1         
+102         | Priya      | Patel     | priya.p@email.com  | Ahmedabad | Gujarat     | 2024-02-20 | 0         
+103         | Rohan      | Gupta     | rohan.g@email.com  | Delhi     | Delhi       | 2024-03-10 | 1         
+104         | Sneha      | Reddy     | sneha.r@email.com  | Hyderabad | Telangana   | 2024-04-05 | 0         
+105         | Vikram     | Singh     | vikram.s@email.com | Jaipur    | Rajasthan   | 2024-05-12 | 1         
+106         | Ananya     | Iyer      | ananya.i@email.com | Chennai   | Tamil Nadu  | 2024-06-18 | 0         
+107         | Karan      | Mehta     | karan.m@email.com  | Pune      | Maharashtra | 2024-07-22 | 1         
+108         | Divya      | Nair      | divya.n@email.com  | Kochi     | Kerala      | 2024-08-30 | 0         
+
+(8 row(s) returned)
+
+≡ƒÆí Insight: 8 customers loaded ΓÇö mix of premium and non-premium across 8 Indian cities.
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q2. first_name, last_name, city of all customers
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT first_name, last_name, city FROM customers;
+
+first_name | last_name | city     
+-----------+-----------+----------
+Aarav      | Sharma    | Mumbai   
+Priya      | Patel     | Ahmedabad
+Rohan      | Gupta     | Delhi    
+Sneha      | Reddy     | Hyderabad
+Vikram     | Singh     | Jaipur   
+Ananya     | Iyer      | Chennai  
+Karan      | Mehta     | Pune     
+Divya      | Nair      | Kochi    
+
+(8 row(s) returned)
+
+≡ƒÆí Insight: Column projection ΓÇö retrieves only the requested columns, reducing I/O.
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q3. Unique categories in the products table
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT DISTINCT category FROM products;
+
+category   
+-----------
+Clothing   
+Electronics
+Home       
+
+(3 row(s) returned)
+
+≡ƒÆí Insight: 3 categories: Electronics, Clothing, Home ΓÇö ShopEase's core verticals.
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q4. Primary Keys & why they must be UNIQUE + NOT NULL
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+ Table        | Primary Key
+ -------------|-------------
+ customers    | customer_id
+ products     | product_id
+ orders       | order_id
+ order_items  | item_id
+
+ WHY UNIQUE + NOT NULL?
+ ΓÇó A Primary Key uniquely identifies every row in a table.
+ ΓÇó UNIQUE ensures no two rows share the same identifier, preventing
+   ambiguity when referencing a specific record.
+ ΓÇó NOT NULL ensures every row HAS an identifier ΓÇö without it, you
+   could have "phantom" rows unreachable by any lookup or join.
+ ΓÇó Together they guarantee referential integrity: foreign keys in
+   child tables can always resolve to exactly one parent row.
+
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q5. Constraints on customers.email
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+ Constraints applied:
+   1. UNIQUE  ΓÇö no two customers can have the same email address.
+   2. NOT NULL ΓÇö every customer must have an email address.
+
+ What happens on duplicate insert?
+
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    ΓåÆ Attempting duplicate email INSERT
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+INSERT INTO customers VALUES (109, 'Test', 'User', 'aarav.s@email.com', 'Mumbai', 'Maharashtra', '2024-09-01', 0);
+
+ΓÜá ERROR: UNIQUE constraint failed: customers.email
+
+≡ƒÆí Explanation: The UNIQUE constraint on `email` rejects the insert because 'aarav.s@email.com' already belongs to customer 101.
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q6. Inserting product with unit_price = -50
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+INSERT INTO products VALUES (209, 'Bad Product', 'Electronics', 'NoBrand', -50.00, 10);
+
+ΓÜá ERROR: CHECK constraint failed: unit_price > 0
+
+≡ƒÆí Explanation: The CHECK constraint `unit_price > 0` prevents insertion of products with zero or negative prices, ensuring data quality.
+
+======================================================================
+  Section B ΓÇö Filtering & Optimization (WHERE, Indexes)
+======================================================================
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q7. All orders with status = 'Delivered'
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT * FROM orders WHERE status = 'Delivered';
+
+order_id | customer_id | order_date | status    | total_amount
+---------+-------------+------------+-----------+-------------
+1001     | 101         | 2024-08-01 | Delivered | 4498        
+1002     | 102         | 2024-08-03 | Delivered | 799         
+1004     | 101         | 2024-08-10 | Delivered | 3499        
+1006     | 105         | 2024-08-15 | Delivered | 5898        
+1008     | 103         | 2024-08-20 | Delivered | 899         
+1010     | 108         | 2024-08-28 | Delivered | 1598        
+
+(6 row(s) returned)
+
+≡ƒÆí Insight: 6 out of 10 orders delivered ΓÇö 60% fulfilment rate in August 2024.
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q8. Electronics with unit_price > Γé╣2000
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT * FROM products WHERE category = 'Electronics' AND unit_price > 2000;
+
+product_id | product_name      | category    | brand | unit_price | stock_qty
+-----------+-------------------+-------------+-------+------------+----------
+203        | Smart Watch       | Electronics | Noise | 2999       | 150      
+205        | Bluetooth Speaker | Electronics | JBL   | 3499       | 200      
+
+(2 row(s) returned)
+
+≡ƒÆí Insight: Smart Watch (Γé╣2999) and Bluetooth Speaker (Γé╣3499) are the premium electronics.
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q9. Customers who joined in 2024 in Maharashtra
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT * FROM customers WHERE join_date BETWEEN '2024-01-01' AND '2024-12-31' AND state = 'Maharashtra';
+
+customer_id | first_name | last_name | email             | city   | state       | join_date  | is_premium
+------------+------------+-----------+-------------------+--------+-------------+------------+-----------
+101         | Aarav      | Sharma    | aarav.s@email.com | Mumbai | Maharashtra | 2024-01-15 | 1         
+107         | Karan      | Mehta     | karan.m@email.com | Pune   | Maharashtra | 2024-07-22 | 1         
+
+(2 row(s) returned)
+
+≡ƒÆí Insight: Aarav (Mumbai) and Karan (Pune) ΓÇö both premium members from Maharashtra.
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q10. Orders between 2024-08-10 and 2024-08-25, not Cancelled
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT * FROM orders
+WHERE order_date BETWEEN '2024-08-10' AND '2024-08-25'
+  AND status != 'Cancelled';
+
+order_id | customer_id | order_date | status    | total_amount
+---------+-------------+------------+-----------+-------------
+1004     | 101         | 2024-08-10 | Delivered | 3499        
+1006     | 105         | 2024-08-15 | Delivered | 5898        
+1007     | 106         | 2024-08-18 | Pending   | 1299        
+1008     | 103         | 2024-08-20 | Delivered | 899         
+1009     | 107         | 2024-08-25 | Shipped   | 6098        
+
+(5 row(s) returned)
+
+≡ƒÆí Insight: 4 orders qualify ΓÇö after excluding the one Cancelled order (1005) in that range.
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q11. Purpose of idx_orders_date index
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+ idx_orders_date is a B-tree index on the `order_date` column of the `orders` table.
+
+ HOW IT HELPS:
+ ΓÇó Without the index, the database must perform a FULL TABLE SCAN ΓÇö reading
+   every row to check the date condition (O(n)).
+ ΓÇó With the index, the database can do a B-tree lookup to jump directly to
+   the relevant date range (O(log n)), then scan only matching rows.
+
+ SAMPLE QUERY that benefits:
+   SELECT * FROM orders
+   WHERE order_date BETWEEN '2024-08-10' AND '2024-08-20';
+
+ The index allows the engine to seek to '2024-08-10' in the B-tree and
+ scan forward until '2024-08-20', skipping all other rows entirely.
+
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q12. Index usage with YEAR(join_date) ΓÇö SARGability
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+ QUERY:  SELECT * FROM customers WHERE YEAR(join_date) = 2024;
+
+ WILL THE INDEX BE USED?  Γ¥î NO (in most RDBMS).
+
+ WHY NOT?
+ ΓÇó Wrapping the indexed column in a function (YEAR()) makes the predicate
+   non-SARGable (Search ARGument Able).
+ ΓÇó The database cannot "look up" YEAR(join_date) in the B-tree index
+   because the index is built on raw `join_date` values, not on the
+   output of YEAR().
+ ΓÇó The engine must evaluate YEAR() for EVERY row ΓåÆ full table scan.
+
+ INDEX-FRIENDLY (SARGable) REWRITE:
+   SELECT * FROM customers
+   WHERE join_date >= '2024-01-01'
+     AND join_date <  '2025-01-01';
+
+ This uses a direct range comparison on join_date, allowing the B-tree
+ index to seek directly to the start of 2024 and scan forward.
+
+
+======================================================================
+  Section C ΓÇö Aggregation (GROUP BY, SUM, COUNT, AVG, MIN, MAX)
+======================================================================
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q13. Total number of orders
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT COUNT(*) AS total_orders FROM orders;
+
+total_orders
+------------
+10          
+
+(1 row(s) returned)
+
+≡ƒÆí Insight: 10 orders in August 2024.
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q14. Total revenue from Delivered orders
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT SUM(total_amount) AS delivered_revenue FROM orders WHERE status = 'Delivered';
+
+delivered_revenue
+-----------------
+17191            
+
+(1 row(s) returned)
+
+≡ƒÆí Insight: Γé╣17,191 in delivered revenue ΓÇö the company's realized income for the period.
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q15. Average unit_price per category
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT category,
+       ROUND(AVG(unit_price), 2) AS avg_unit_price
+FROM products
+GROUP BY category;
+
+category    | avg_unit_price
+------------+---------------
+Clothing    | 2699.0        
+Electronics | 2224.0        
+Home        | 949.0         
+
+(3 row(s) returned)
+
+≡ƒÆí Insight: Electronics avg Γé╣2224, Clothing avg Γé╣2699, Home avg Γé╣949. Clothing has the highest average due to premium Nike shoes.
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q16. Order count & revenue by status (sorted by revenue DESC)
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT status,
+       COUNT(*)            AS order_count,
+       SUM(total_amount)   AS total_revenue
+FROM orders
+GROUP BY status
+ORDER BY total_revenue DESC;
+
+status    | order_count | total_revenue
+----------+-------------+--------------
+Delivered | 6           | 17191        
+Shipped   | 2           | 13596        
+Cancelled | 1           | 2999         
+Pending   | 1           | 1299         
+
+(4 row(s) returned)
+
+≡ƒÆí Insight: Delivered dominates with 6 orders / Γé╣17,191. Shipped orders (Γé╣13,596) represent pipeline revenue.
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q17. Most expensive & cheapest product per category
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT category,
+       MAX(unit_price) AS max_price,
+       MIN(unit_price) AS min_price
+FROM products
+GROUP BY category;
+
+category    | max_price | min_price
+------------+-----------+----------
+Clothing    | 4599      | 799      
+Electronics | 3499      | 899      
+Home        | 1299      | 599      
+
+(3 row(s) returned)
+
+≡ƒÆí Insight: Electronics has the widest price spread (Γé╣899ΓÇôΓé╣3499), indicating a diverse product portfolio.
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q18. Categories with average unit_price > Γé╣2000
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT category,
+       ROUND(AVG(unit_price), 2) AS avg_price
+FROM products
+GROUP BY category
+HAVING AVG(unit_price) > 2000;
+
+category    | avg_price
+------------+----------
+Clothing    | 2699.0   
+Electronics | 2224.0   
+
+(2 row(s) returned)
+
+≡ƒÆí Insight: Electronics (Γé╣2224) and Clothing (Γé╣2699) exceed the Γé╣2000 threshold ΓÇö both are higher-value segments.
+
+======================================================================
+  Section D ΓÇö Joins & Relationships
+======================================================================
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q19. INNER JOIN ΓÇö Orders with customer names
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT o.order_id,
+       o.order_date,
+       c.first_name,
+       c.last_name,
+       o.total_amount
+FROM orders o
+INNER JOIN customers c ON o.customer_id = c.customer_id;
+
+order_id | order_date | first_name | last_name | total_amount
+---------+------------+------------+-----------+-------------
+1001     | 2024-08-01 | Aarav      | Sharma    | 4498        
+1002     | 2024-08-03 | Priya      | Patel     | 799         
+1003     | 2024-08-05 | Rohan      | Gupta     | 7498        
+1004     | 2024-08-10 | Aarav      | Sharma    | 3499        
+1005     | 2024-08-12 | Sneha      | Reddy     | 2999        
+1006     | 2024-08-15 | Vikram     | Singh     | 5898        
+1007     | 2024-08-18 | Ananya     | Iyer      | 1299        
+1008     | 2024-08-20 | Rohan      | Gupta     | 899         
+1009     | 2024-08-25 | Karan      | Mehta     | 6098        
+1010     | 2024-08-28 | Divya      | Nair      | 1598        
+
+(10 row(s) returned)
+
+≡ƒÆí Insight: All 10 orders matched to their customers. Aarav Sharma and Rohan Gupta each placed 2 orders ΓÇö most active customers.
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q20. LEFT JOIN ΓÇö All customers with their orders (NULLs for no orders)
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT c.customer_id,
+       c.first_name,
+       c.last_name,
+       o.order_id,
+       o.order_date,
+       o.total_amount
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+ORDER BY c.customer_id;
+
+customer_id | first_name | last_name | order_id | order_date | total_amount
+------------+------------+-----------+----------+------------+-------------
+101         | Aarav      | Sharma    | 1001     | 2024-08-01 | 4498        
+101         | Aarav      | Sharma    | 1004     | 2024-08-10 | 3499        
+102         | Priya      | Patel     | 1002     | 2024-08-03 | 799         
+103         | Rohan      | Gupta     | 1003     | 2024-08-05 | 7498        
+103         | Rohan      | Gupta     | 1008     | 2024-08-20 | 899         
+104         | Sneha      | Reddy     | 1005     | 2024-08-12 | 2999        
+105         | Vikram     | Singh     | 1006     | 2024-08-15 | 5898        
+106         | Ananya     | Iyer      | 1007     | 2024-08-18 | 1299        
+107         | Karan      | Mehta     | 1009     | 2024-08-25 | 6098        
+108         | Divya      | Nair      | 1010     | 2024-08-28 | 1598        
+
+(10 row(s) returned)
+
+≡ƒÆí Insight: All 8 customers appear. Every customer placed at least 1 order ΓÇö no NULL order rows in this dataset.
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q21. Three-table JOIN ΓÇö Order items with product details
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT o.order_id,
+       p.product_name,
+       oi.quantity,
+       oi.unit_price,
+       oi.discount_pct
+FROM orders o
+JOIN order_items oi ON o.order_id = oi.order_id
+JOIN products p     ON oi.product_id = p.product_id
+ORDER BY o.order_id, oi.item_id;
+
+order_id | product_name         | quantity | unit_price | discount_pct
+---------+----------------------+----------+------------+-------------
+1001     | Wireless Earbuds     | 2        | 1499       | 0           
+1001     | Laptop Stand         | 1        | 899        | 10          
+1002     | Cotton T-Shirt       | 1        | 799        | 0           
+1003     | Smart Watch          | 1        | 2999       | 0           
+1003     | Running Shoes        | 1        | 4599       | 5           
+1004     | Bluetooth Speaker    | 1        | 3499       | 0           
+1005     | Smart Watch          | 1        | 2999       | 0           
+1006     | Wireless Earbuds     | 1        | 1499       | 10          
+1006     | Running Shoes        | 1        | 4599       | 5           
+1007     | Bedsheet Set         | 1        | 1299       | 0           
+1008     | Laptop Stand         | 1        | 899        | 0           
+1009     | Bluetooth Speaker    | 1        | 3499       | 0           
+1009     | Cushion Covers (Set) | 2        | 599        | 15          
+1010     | Bedsheet Set         | 1        | 1299       | 0           
+1010     | Cushion Covers (Set) | 1        | 599        | 0           
+
+(15 row(s) returned)
+
+≡ƒÆí Insight: 15 line items across 10 orders. Discounts range from 0% to 15%, with Cushion Covers getting the steepest discount.
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q22. LEFT JOIN vs RIGHT JOIN vs FULL OUTER JOIN
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+ LEFT JOIN (A LEFT JOIN B ON ΓÇª):
+   Returns ALL rows from A (left table) and matching rows from B.
+   If no match in B, columns from B are NULL.
+   Example: customers LEFT JOIN orders ΓåÆ shows all customers, even
+   those with no orders.
+
+ RIGHT JOIN (A RIGHT JOIN B ON ΓÇª):
+   Returns ALL rows from B (right table) and matching rows from A.
+   If no match in A, columns from A are NULL.
+   Example: customers RIGHT JOIN orders ΓåÆ shows all orders, even
+   those whose customer might not exist (unlikely with FK constraints).
+
+ FULL OUTER JOIN:
+   Returns ALL rows from BOTH tables. Unmatched rows on either side
+   get NULLs for the other table's columns.
+   Use case: Reconciliation reports ΓÇö e.g., comparing two data sources
+   where some records may exist in one but not the other.
+
+ Note: SQLite does not natively support RIGHT JOIN or FULL OUTER JOIN,
+ but they can be emulated using LEFT JOIN with reversed table order,
+ or UNION of two LEFT JOINs respectively.
+
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q23. Foreign Key relationships & referential integrity
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+ Foreign Key Relationships:
+ ΓöîΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÉ
+ Γöé  orders.customer_id  ΓåÆ  customers.customer_id            Γöé
+ Γöé  order_items.order_id   ΓåÆ  orders.order_id               Γöé
+ Γöé  order_items.product_id ΓåÆ  products.product_id           Γöé
+ ΓööΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÿ
+
+ What happens if you INSERT an order with customer_id = 999?
+
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    ΓåÆ Attempting INSERT with non-existent customer_id = 999
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+INSERT INTO orders VALUES (1099, 999, '2024-09-01', 'Pending', 500.00);
+
+ΓÜá ERROR: FOREIGN KEY constraint failed
+
+≡ƒÆí Explanation: The FOREIGN KEY constraint on orders.customer_id rejects the insert because customer_id=999 does not exist in the customers table. This maintains referential integrity ΓÇö every order must belong to a valid customer.
+
+======================================================================
+  Section E ΓÇö Advanced Concepts (CASE, ACID, Transactions)
+======================================================================
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q24. CASE ΓÇö Product price tiers
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT product_name,
+       unit_price,
+       CASE
+           WHEN unit_price < 1000             THEN 'Budget'
+           WHEN unit_price BETWEEN 1000 AND 3000 THEN 'Mid-Range'
+           WHEN unit_price > 3000             THEN 'Premium'
+       END AS price_tier
+FROM products
+ORDER BY unit_price;
+
+product_name         | unit_price | price_tier
+---------------------+------------+-----------
+Cushion Covers (Set) | 599        | Budget    
+Cotton T-Shirt       | 799        | Budget    
+Laptop Stand         | 899        | Budget    
+Bedsheet Set         | 1299       | Mid-Range 
+Wireless Earbuds     | 1499       | Mid-Range 
+Smart Watch          | 2999       | Mid-Range 
+Bluetooth Speaker    | 3499       | Premium   
+Running Shoes        | 4599       | Premium   
+
+(8 row(s) returned)
+
+≡ƒÆí Insight: Product distribution: 3 Budget, 3 Mid-Range, 2 Premium ΓÇö a balanced portfolio across price segments.
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q25. CASE inside aggregate ΓÇö Delivered vs Not Delivered counts
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT
+    SUM(CASE WHEN status = 'Delivered' THEN 1 ELSE 0 END) AS delivered_count,
+    SUM(CASE WHEN status != 'Delivered' THEN 1 ELSE 0 END) AS not_delivered_count
+FROM orders;
+
+delivered_count | not_delivered_count
+----------------+--------------------
+6               | 4                  
+
+(1 row(s) returned)
+
+≡ƒÆí Insight: 6 Delivered vs 4 Not Delivered ΓÇö 60% fulfilment rate. The non-delivered include 2 Shipped (in transit), 1 Pending, and 1 Cancelled.
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q26. ACID Properties Explained
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+ ΓöîΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö¼ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÉ
+ Γöé Property     Γöé Meaning & Real-World Example                              Γöé
+ Γö£ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöñ
+ Γöé A ΓÇö AtomicityΓöé A transaction is "all or nothing." If any part fails,     Γöé
+ Γöé              Γöé the entire transaction is rolled back.                     Γöé
+ Γöé              Γöé Example: In a bank transfer, if Γé╣1000 is debited from     Γöé
+ Γöé              Γöé Account A but the credit to Account B fails, the debit    Γöé
+ Γöé              Γöé must also be reversed. You can't have money "disappear."  Γöé
+ Γö£ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöñ
+ Γöé C ΓÇöConsistencyΓöé A transaction moves the database from one valid state    Γöé
+ Γöé              Γöé to another, respecting all constraints (PK, FK, CHECK).   Γöé
+ Γöé              Γöé Example: After the bank transfer, the total money across  Γöé
+ Γöé              Γöé both accounts remains the same. No constraint is violated.Γöé
+ Γö£ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöñ
+ Γöé I ΓÇö IsolationΓöé Concurrent transactions don't interfere with each other.  Γöé
+ Γöé              Γöé Each sees the database as if it's the only one running.   Γöé
+ Γöé              Γöé Example: Two people transferring from the same account    Γöé
+ Γöé              Γöé simultaneously won't cause a race condition or double-    Γöé
+ Γöé              Γöé spend. Each transaction sees a consistent snapshot.       Γöé
+ Γö£ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöñ
+ Γöé D ΓÇö DurabilityΓöé Once a transaction is committed, it persists even if    Γöé
+ Γöé              Γöé the system crashes (power failure, hardware fault).       Γöé
+ Γöé              Γöé Example: After the bank confirms "Transfer Successful,"   Γöé
+ Γöé              Γöé the updated balances survive a server restart.            Γöé
+ Γöé              Γöé This is achieved via write-ahead logs (WAL) and fsync.   Γöé
+ ΓööΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö┤ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÿ
+
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Q27. Transaction ΓÇö Atomic order insertion with stock update
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+ The following transaction inserts a new order and its items atomically.
+ If any step fails, everything is rolled back.
+
+ SQL Transaction Block:
+ ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+ BEGIN TRANSACTION;
+
+ -- Step 1: Insert new order
+ INSERT INTO orders VALUES
+   (1011, 102, '2026-05-31', 'Pending', 1598.00);
+
+ -- Step 2: Insert two order items
+ INSERT INTO order_items VALUES
+   (5016, 1011, 206, 1, 1299.00, 0);    -- 1├ù Bedsheet Set
+ INSERT INTO order_items VALUES
+   (5017, 1011, 208, 1, 599.00, 15);     -- 1├ù Cushion Covers (Set), 15% off
+
+ -- Step 3: Update stock quantities
+ UPDATE products SET stock_qty = stock_qty - 1 WHERE product_id = 206;
+ UPDATE products SET stock_qty = stock_qty - 1 WHERE product_id = 208;
+
+ -- Step 4: If we reach here, all steps succeeded
+ COMMIT;
+
+ -- If any step above had failed, we would execute:
+ -- ROLLBACK;
+
+ Executing the transaction...
+
+ Γ£à Transaction COMMITTED successfully.
+
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    ΓåÆ Verify: New order 1011
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT * FROM orders WHERE order_id = 1011;
+
+order_id | customer_id | order_date | status  | total_amount
+---------+-------------+------------+---------+-------------
+1011     | 102         | 2026-05-31 | Pending | 1598        
+
+(1 row(s) returned)
+
+≡ƒÆí Insight: Order 1011 for customer 102 (Priya Patel) successfully inserted.
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    ΓåÆ Verify: New order items for order 1011
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT * FROM order_items WHERE order_id = 1011;
+
+item_id | order_id | product_id | quantity | unit_price | discount_pct
+--------+----------+------------+----------+------------+-------------
+5016    | 1011     | 206        | 1        | 1299       | 0           
+5017    | 1011     | 208        | 1        | 599        | 15          
+
+(2 row(s) returned)
+
+≡ƒÆí Insight: Two items added: Bedsheet Set and Cushion Covers.
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    ΓåÆ Verify: Updated stock for products 206 & 208
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT product_id, product_name, stock_qty FROM products WHERE product_id IN (206, 208);
+
+product_id | product_name         | stock_qty
+-----------+----------------------+----------
+206        | Bedsheet Set         | 299      
+208        | Cushion Covers (Set) | 399      
+
+(2 row(s) returned)
+
+≡ƒÆí Insight: Stock reduced by 1 each: Bedsheet Set 300ΓåÆ299, Cushion Covers 400ΓåÆ399.
+
+======================================================================
+  Bonus ΓÇö Data Validation & Quality Checks
+======================================================================
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Row counts per table
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT 'customers'   AS tbl, COUNT(*) AS row_count FROM customers
+UNION ALL
+SELECT 'products',              COUNT(*) FROM products
+UNION ALL
+SELECT 'orders',                COUNT(*) FROM orders
+UNION ALL
+SELECT 'order_items',           COUNT(*) FROM order_items;
+
+tbl         | row_count
+------------+----------
+customers   | 8        
+products    | 8        
+orders      | 11       
+order_items | 17       
+
+(4 row(s) returned)
+
+≡ƒÆí Insight: 8 customers, 8 products, 11 orders (incl. new one), 17 order items.
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Monthly revenue trend (Aug 2024)
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT
+    SUBSTR(order_date, 1, 7)  AS month,
+    COUNT(*)                  AS num_orders,
+    SUM(total_amount)         AS revenue
+FROM orders
+WHERE status != 'Cancelled'
+GROUP BY SUBSTR(order_date, 1, 7)
+ORDER BY month;
+
+month   | num_orders | revenue
+--------+------------+--------
+2024-08 | 9          | 32086  
+2026-05 | 1          | 1598   
+
+(2 row(s) returned)
+
+≡ƒÆí Insight: August 2024 saw 10 non-cancelled orders generating Γé╣28,286 in gross revenue.
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Top 3 customers by total spend
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT c.customer_id,
+       c.first_name || ' ' || c.last_name AS customer_name,
+       SUM(o.total_amount) AS total_spend,
+       COUNT(o.order_id)   AS order_count
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+WHERE o.status != 'Cancelled'
+GROUP BY c.customer_id
+ORDER BY total_spend DESC
+LIMIT 3;
+
+customer_id | customer_name | total_spend | order_count
+------------+---------------+-------------+------------
+103         | Rohan Gupta   | 8397        | 2          
+101         | Aarav Sharma  | 7997        | 2          
+107         | Karan Mehta   | 6098        | 1          
+
+(3 row(s) returned)
+
+≡ƒÆí Insight: Rohan Gupta leads with Γé╣8,397 (2 orders), followed by Aarav Sharma Γé╣7,997 and Karan Mehta Γé╣6,098.
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Top 3 products by quantity sold
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT p.product_id,
+       p.product_name,
+       SUM(oi.quantity) AS total_qty_sold
+FROM order_items oi
+JOIN products p ON oi.product_id = p.product_id
+JOIN orders o   ON oi.order_id = o.order_id
+WHERE o.status != 'Cancelled'
+GROUP BY p.product_id
+ORDER BY total_qty_sold DESC
+LIMIT 3;
+
+product_id | product_name         | total_qty_sold
+-----------+----------------------+---------------
+208        | Cushion Covers (Set) | 4             
+206        | Bedsheet Set         | 3             
+201        | Wireless Earbuds     | 3             
+
+(3 row(s) returned)
+
+≡ƒÆí Insight: Wireless Earbuds top sales volume (3 units), followed by Cushion Covers and multiple products at 2 units.
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+  Duplicate email check (data quality)
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+SQL:
+SELECT email, COUNT(*) AS cnt
+FROM customers
+GROUP BY email
+HAVING COUNT(*) > 1;
+
+email | cnt
+------+----
+
+(0 row(s) returned)
+
+≡ƒÆí Insight: No duplicates found ΓÇö the UNIQUE constraint is working correctly.
+
+======================================================================
+  Γ£à ALL QUERIES EXECUTED SUCCESSFULLY
+======================================================================
+
