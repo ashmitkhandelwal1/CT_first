@@ -1,0 +1,26 @@
+product_id,product_name,category,price,base_price,status,amount,user_id,region,priority
+P001,Laptop Pro 15,Electronics,85999.00,72880.00,Completed,85999,U101,North,High
+P002,Wireless Mouse,Electronics,1299.00,1101.00,Completed,1299,U102,South,Low
+P003,Cotton T-Shirt,Clothing,599.00,508.00,Pending,599,U103,East,Medium
+P004,Running Shoes,Footwear,4999.00,4237.00,Completed,4999,U104,West,High
+P005,Bluetooth Speaker,Electronics,3499.00,2966.00,Cancelled,3499,U105,North,Low
+P006,Denim Jeans,Clothing,1999.00,1694.00,Completed,1999,U106,South,Medium
+P007,4K Monitor,Electronics,32999.00,27965.00,Completed,32999,U107,North,High
+P008,Yoga Mat,Sports,899.00,762.00,Pending,899,,East,Low
+P009,Mechanical Keyboard,Electronics,7499.00,6355.00,Completed,7499,U109,West,Medium
+P010,Smartwatch Series 5,Electronics,22999.00,19490.00,Completed,22999,U110,North,High
+P011,Steel Water Bottle,Kitchen,499.00,423.00,Cancelled,499,U111,South,Low
+P012,Novel - The Alchemist,Books,350.00,297.00,Completed,350,U112,East,Low
+P013,Gaming Headset,Electronics,5999.00,5084.00,Completed,5999,U113,West,High
+P014,Office Chair,Furniture,12999.00,11016.00,Pending,12999,U114,North,Medium
+P015,USB-C Hub,Electronics,2499.00,2118.00,Completed,2499,U115,South,High
+P016,Sunscreen SPF50,Health,799.00,677.00,Completed,799,,North,Low
+P017,Python Programming Book,Books,699.00,593.00,Completed,699,U117,East,Medium
+P018,Noise Cancelling Earbuds,Electronics,15999.00,13558.00,Completed,15999,U118,West,High
+P019,Badminton Racket,Sports,1299.00,1101.00,Cancelled,1299,U119,South,Low
+P020,Air Purifier,Electronics,9999.00,8474.00,Completed,9999,U120,North,High
+P021,Dining Table,Furniture,24999.00,21186.00,Pending,24999,U121,East,Medium
+P022,Face Wash,Health,399.00,338.00,Completed,399,U122,West,Low
+P023,Tablet 10inch,Electronics,29999.00,25423.00,Completed,29999,U123,North,High
+P024,Cricket Bat,Sports,2499.00,2118.00,Completed,2499,U124,South,Medium
+P025,Protein Powder,Health,2999.00,2542.00,Completed,2999,,East,High
