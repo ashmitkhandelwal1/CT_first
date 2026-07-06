@@ -1,0 +1,23 @@
+customer_id,name,email,city,country,age,purchase_amount,status,last_updated
+C001,Alice Johnson,alice.johnson@email.com,New York,USA,29,1500.00,active,2024-01-15
+C002,Bob Smith,bob.smith@email.com,London,UK,34,2200.50,active,2024-01-18
+C003,Carol White,carol.white@email.com,Toronto,Canada,27,980.75,inactive,2024-01-20
+C004,David Brown,david.brown@email.com,Sydney,Australia,45,3100.00,active,2024-02-01
+C005,Eva Martinez,eva.martinez@email.com,Madrid,Spain,31,1750.25,active,2024-02-05
+C006,Frank Lee,frank.lee@email.com,Tokyo,Japan,38,2400.00,active,2024-02-10
+C007,Grace Kim,grace.kim@email.com,Seoul,South Korea,25,860.00,inactive,2024-02-15
+C008,Henry Davis,henry.davis@email.com,Berlin,Germany,52,4500.75,active,2024-02-20
+C009,Isabel Clark,isabel.clark@email.com,Paris,France,30,1200.00,active,2024-02-22
+C010,James Wilson,james.wilson@email.com,Chicago,USA,41,3300.50,active,2024-03-01
+C011,Karen Moore,karen.moore@email.com,Melbourne,Australia,36,2150.00,active,2024-03-05
+C012,Liam Taylor,liam.taylor@email.com,Dublin,Ireland,28,990.25,inactive,2024-03-10
+C013,Mia Anderson,mia.anderson@email.com,Amsterdam,Netherlands,33,1800.00,active,2024-03-12
+C014,Noah Thomas,noah.thomas@email.com,Stockholm,Sweden,47,5200.00,active,2024-03-15
+C015,Olivia Jackson,olivia.jackson@email.com,Rome,Italy,29,1450.50,active,2024-03-20
+C016,Paul Harris,paul.harris@email.com,Lisbon,Portugal,55,6100.75,active,2024-03-22
+C017,Quinn Martin,quinn.martin@email.com,Warsaw,Poland,22,650.00,inactive,2024-03-25
+C018,Rachel Garcia,rachel.garcia@email.com,Mexico City,Mexico,39,2800.00,active,2024-03-28
+C019,Sam Rodriguez,sam.rodriguez@email.com,Buenos Aires,Argentina,43,3700.25,active,2024-04-01
+C020,Tina Lewis,tina.lewis@email.com,Cape Town,South Africa,31,1600.00,active,2024-04-05
+C001,Alice Johnson,alice.johnson@email.com,New York,USA,29,1500.00,active,2024-01-15
+C008,Henry Davis,henry.davis@email.com,Berlin,Germany,52,4500.75,active,2024-02-20

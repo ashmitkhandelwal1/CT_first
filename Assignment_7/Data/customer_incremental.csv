@@ -1,0 +1,13 @@
+customer_id,name,email,city,country,age,purchase_amount,status,last_updated
+C003,Carol White,carol.white@newemail.com,Vancouver,Canada,28,1200.00,active,2024-05-01
+C007,Grace Kim,grace.kim@email.com,Busan,South Korea,26,1400.50,active,2024-05-02
+C012,Liam Taylor,liam.taylor@email.com,Cork,Ireland,29,1350.75,active,2024-05-03
+C017,Quinn Martin,quinn.martin@email.com,Krakow,Poland,23,900.00,active,2024-05-04
+C021,Uma Patel,uma.patel@email.com,Mumbai,India,35,2600.00,active,2024-05-05
+C022,Victor Chen,victor.chen@email.com,Shanghai,China,40,3800.50,active,2024-05-06
+C023,Wendy Scott,wendy.scott@email.com,Vancouver,Canada,26,1100.25,active,2024-05-07
+C024,Xander Brooks,xander.brooks@email.com,Houston,USA,33,2900.00,active,2024-05-08
+C025,Yuki Tanaka,yuki.tanaka@email.com,Osaka,Japan,29,1700.75,active,2024-05-09
+C026,Zara Ahmed,zara.ahmed@email.com,Dubai,UAE,37,4200.00,active,2024-05-10
+C005,Eva Martinez,eva.martinez@newemail.com,Barcelona,Spain,32,2500.00,active,2024-05-11
+C010,James Wilson,james.wilson@email.com,New York,USA,42,4100.50,active,2024-05-12
