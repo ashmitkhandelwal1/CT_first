@@ -1,0 +1,76 @@
+product_id,name,category,price,stock_qty,supplier_id,created_at
+1,Premium Shirt,Toys,1291.5,0,2.0,2019-12-27
+2,Premium Monitor,Automotive,1032.23,101,11.0,2019-08-14
+3,Budget Headphones,Home & Kitchen,1476.81,27,5.0,2022-06-02
+4,Smart Gloves,Sports,277.13,354,9.0,2023-10-11
+5,Smart Watch,Books,1521.88,313,19.0,2023-10-18
+6,Smart Mouse,Automotive,980.98,376,8.0,2022-04-01
+7,Pro Phone,Automotive,1797.01,217,16.0,2022-11-27
+10,Budget Jacket,Beauty,1787.4,313,7.0,2019-06-15
+11,Classic Shirt,Electronics,1031.9,0,12.0,2022-02-18
+12,Lite Shoes,Automotive,1962.6,446,7.0,2023-04-08
+13,Classic Desk,Toys,1009.61,269,16.0,2022-10-21
+14,Ultra Keyboard,Clothing,1243.8,44,6.0,2019-06-07
+15,Ultra Blender,Grocery,1032.23,213,18.0,2021-08-28
+16,Eco Laptop,Home & Kitchen,586.58,171,11.0,2023-05-31
+17,Eco Keyboard,Books,611.64,190,2.0,2020-08-05
+18,Pro Speaker,Books,1848.64,341,6.0,2019-03-26
+19,Pro Keyboard,Electronics,524.51,75,18.0,2021-12-28
+20,Premium Jacket,Toys,1862.48,279,11.0,2020-08-28
+21,Ultra Phone,Automotive,1335.44,245,5.0,2019-08-28
+22,Smart Speaker,Electronics,1682.55,269,9.0,2019-06-21
+23,Eco Novel,Grocery,1951.8,184,14.0,
+24,Classic Gloves,Home & Kitchen,619.63,212,10.0,2023-01-30
+25,Smart Charger,Home & Kitchen,283.44,268,3.0,2022-04-24
+26,Budget Laptop,Grocery,821.87,468,6.0,2020-08-15
+27,Premium Chair,Automotive,1670.0,78,16.0,2022-09-25
+28,Smart Watch,Clothing,986.31,496,12.0,2022-03-04
+29,Ultra Monitor,Electronics,1948.65,29,15.0,2019-10-05
+30,Premium Desk,Electronics,725.52,479,7.0,2020-01-11
+31,Pro Tablet,Sports,648.6,185,19.0,
+32,Ultra Gloves,Books,1558.72,113,18.0,2023-08-30
+33,Budget Charger,Electronics,923.68,185,15.0,2022-05-08
+35,Budget Novel,Home & Kitchen,42.52,262,16.0,2020-06-02
+36,Ultra Laptop,Home & Kitchen,1510.33,343,3.0,2023-03-09
+37,Classic Gloves,Home & Kitchen,325.31,419,1.0,2023-01-05
+38,Ultra Watch,Clothing,1803.81,435,12.0,2020-01-15
+39,Budget Watch,Grocery,1670.31,160,4.0,2021-10-12
+40,Ultra Tablet,Beauty,1445.66,159,15.0,2021-04-14
+41,Smart Camera,Toys,1714.26,251,13.0,2022-09-10
+42,Budget Shoes,Books,792.65,173,13.0,2023-09-13
+43,Eco Desk,Beauty,1530.81,486,16.0,2019-10-29
+44,Budget Blender,Uncategorised,505.13,425,1.0,2021-02-22
+45,Classic Shoes,Grocery,608.99,103,16.0,2020-06-19
+46,Premium Shirt,Automotive,1981.47,0,6.0,2023-10-29
+47,Pro Monitor,Clothing,864.21,283,19.0,2022-02-25
+48,Premium Jacket,Toys,530.47,0,2.0,2021-01-20
+49,Premium Bag,Beauty,764.24,126,10.0,2022-11-10
+51,Classic Jacket,Automotive,1142.86,172,11.0,2020-09-05
+52,Smart Camera,Grocery,996.42,152,13.0,2022-07-03
+53,Budget Phone,Grocery,193.99,407,10.0,2020-09-06
+54,Classic Camera,Grocery,1032.23,360,6.0,2020-03-12
+55,Eco Desk,Beauty,1874.64,30,12.0,2020-05-07
+56,Ultra Charger,Home & Kitchen,823.47,146,9.0,2020-04-28
+57,Budget Shoes,Automotive,387.87,216,2.0,2020-07-12
+58,Ultra Desk,Automotive,1319.05,459,20.0,2019-05-11
+59,Smart Gloves,Books,1344.99,256,17.0,2022-04-03
+60,Ultra Monitor,Toys,1769.71,199,8.0,2020-03-22
+61,Pro Camera,Electronics,1940.0,485,18.0,2022-10-30
+62,Ultra Shoes,Electronics,729.18,17,2.0,2023-06-04
+63,Ultra Tablet,Clothing,772.46,226,13.0,2020-06-07
+64,Lite Chair,Toys,424.72,208,9.0,2023-08-13
+65,Eco Monitor,Beauty,1475.2,422,9.0,2020-12-21
+66,Classic Keyboard,Books,1391.94,0,7.0,2020-10-04
+67,Budget Watch,Books,502.96,405,15.0,2023-02-14
+68,Pro Phone,Beauty,1654.4,193,19.0,2019-02-17
+69,Lite Novel,Uncategorised,1948.38,307,3.0,2019-12-15
+70,Budget Laptop,Automotive,1438.57,114,7.0,2023-07-24
+71,Ultra Monitor,Home & Kitchen,767.24,346,6.0,
+72,Ultra Headphones,Automotive,1237.27,446,13.0,2022-12-31
+73,Smart Speaker,Toys,516.17,181,20.0,2023-07-17
+74,Ultra Mouse,Toys,1241.22,21,9.0,2021-10-06
+75,Eco Shoes,Sports,183.85,65,9.0,2021-05-30
+76,Ultra Speaker,Beauty,1660.03,251,5.0,2022-09-08
+77,Eco Shirt,Automotive,381.9,223,,2020-12-31
+78,Eco Keyboard,Clothing,988.51,145,6.0,2023-08-12
+80,Budget Jacket,Toys,750.25,425,16.0,2020-07-05
