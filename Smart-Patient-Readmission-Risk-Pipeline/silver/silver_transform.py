@@ -15,32 +15,37 @@
 # COMMAND ----------
 
 # DBTITLE 1,Imports and Configuration
-import sys, os, importlib
+import os
+import sys
 
-PROJECT_ROOT = "/Workspace/Users/aman.kumar5@celebaltech.com/Smart-Patient-Readmission-Risk-Pipeline"
-if PROJECT_ROOT not in sys.path:
-    sys.path.insert(0, PROJECT_ROOT)
+# Add project root to Python path
+project_root = os.path.abspath("..")
 
-for mod_name in list(sys.modules.keys()):
-    if mod_name in ("config", "utils", "utils.helpers", "transformations", "transformations.feature_engineering"):
-        del sys.modules[mod_name]
-importlib.invalidate_caches()
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
+print("Project root:", project_root)
 
 from pyspark.sql import functions as F
 
 import config as cfg
 from utils.helpers import (
-    apply_spark_optimizations,
     optimize_table,
     analyze_table,
     log_table_stats,
     validate_no_duplicates,
     write_delta_overwrite,
 )
-from transformations.feature_engineering import build_silver_admissions_enriched
 
-apply_spark_optimizations(spark, cfg.SPARK_OPTIMIZATIONS)
+from transformations.feature_engineering import (
+    build_silver_admissions_enriched
+)
+
+# Databricks Free Edition
+# apply_spark_optimizations(spark, cfg.SPARK_OPTIMIZATIONS)
+
 spark.sql(f"CREATE SCHEMA IF NOT EXISTS {cfg.CATALOG}.{cfg.SCHEMA}")
+
 print(f"\nUsing: {cfg.CATALOG}.{cfg.SCHEMA}")
 
 # COMMAND ----------

@@ -1,10 +1,18 @@
 # Databricks notebook source
+import os
+import sys
+
+project_root = os.path.abspath("..")
+
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
+print("Project root:", project_root)
 
 from datetime import date, timedelta
 import random
 from pyspark.sql import functions as F
 from pyspark.sql import types as T
-
 import config as cfg
 from utils.helpers import (
     apply_spark_optimizations,
@@ -23,7 +31,7 @@ from utils.helpers import (
 random.seed(cfg.RANDOM_SEED)
 
 # ── Apply Spark optimizations (AQE, broadcast, Delta) ──
-apply_spark_optimizations(spark, cfg.SPARK_OPTIMIZATIONS)
+#apply_spark_optimizations(spark, cfg.SPARK_OPTIMIZATIONS)
 
 # Ensure schema exists
 spark.sql(f"CREATE SCHEMA IF NOT EXISTS {cfg.CATALOG}.{cfg.SCHEMA}")

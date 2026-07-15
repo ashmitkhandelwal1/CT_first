@@ -14,10 +14,21 @@ from pyspark.sql import DataFrame, SparkSession
 
 
 def apply_spark_optimizations(spark: SparkSession, optimizations: dict) -> None:
-    """Apply a dict of Spark SQL conf settings to the active session."""
+    """
+    Apply Spark configs, skipping ones that aren't supported by
+    Databricks Free Edition / Spark Connect.
+    """
+    applied = 0
+
     for key, value in optimizations.items():
-        spark.conf.set(key, value)
-    print(f"Applied {len(optimizations)} Spark optimization settings")
+        try:
+            spark.conf.set(key, value)
+            print(f"✓ {key}")
+            applied += 1
+        except Exception as e:
+            print(f"Skipped {key}: {e}")
+
+    print(f"Applied {applied}/{len(optimizations)} Spark settings")
 
 
 def write_delta_overwrite(df: DataFrame, table_name: str) -> None:
