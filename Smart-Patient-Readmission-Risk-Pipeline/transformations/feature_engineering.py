@@ -26,7 +26,6 @@ DEPARTMENT_CANONICALIZATION = {
     "icu": "ICU",
 }
 
-
 def clean_patients(patients_df: DataFrame) -> DataFrame:
     """Impute missing patient demographics and drop duplicate patient_id rows."""
     return (
@@ -35,11 +34,9 @@ def clean_patients(patients_df: DataFrame) -> DataFrame:
         .withColumn("contact", F.coalesce(F.col("contact"), F.lit("Unknown")))
     )
 
-
 def clean_diagnoses(diagnoses_df: DataFrame) -> DataFrame:
     """Drop duplicate diagnosis_id rows."""
     return diagnoses_df.dropDuplicates(["diagnosis_id"])
-
 
 def standardize_department(admissions_df: DataFrame) -> DataFrame:
     """Normalize inconsistent department casing/abbreviations to canonical values."""
@@ -52,7 +49,6 @@ def standardize_department(admissions_df: DataFrame) -> DataFrame:
         F.coalesce(mapping_expr[normalized], F.col("department")),
     )
 
-
 def clean_admissions(admissions_df: DataFrame) -> DataFrame:
     """Impute missing physician values and drop duplicate admission_id rows."""
     return (
@@ -60,7 +56,6 @@ def clean_admissions(admissions_df: DataFrame) -> DataFrame:
         .transform(standardize_department)
         .withColumn("physician", F.coalesce(F.col("physician"), F.lit("Unassigned")))
     )
-
 
 def recompute_length_of_stay(admissions_df: DataFrame) -> DataFrame:
     """Recompute length_of_stay from admission/discharge dates for consistency,
@@ -70,14 +65,12 @@ def recompute_length_of_stay(admissions_df: DataFrame) -> DataFrame:
         F.datediff(F.col("discharge_date"), F.col("admission_date")).cast("int"),
     )
 
-
 def add_readmission_flag(admissions_df: DataFrame) -> DataFrame:
     """Clean readmitted_within_30_days into a strict binary readmission_flag."""
     return admissions_df.withColumn(
         "readmission_flag",
         F.when(F.col("readmitted_within_30_days") == 1, 1).otherwise(0),
     ).drop("readmitted_within_30_days")
-
 
 def add_age_group(df: DataFrame) -> DataFrame:
     """Bucket patients into clinical age groups."""
@@ -89,11 +82,9 @@ def add_age_group(df: DataFrame) -> DataFrame:
         .otherwise("60+"),
     )
 
-
 def add_admission_month(df: DataFrame) -> DataFrame:
     """Derive year-month for time-series analysis."""
     return df.withColumn("admission_month", F.date_format("admission_date", "yyyy-MM"))
-
 
 def add_los_bucket(df: DataFrame) -> DataFrame:
     """Bucket length of stay into short/medium/long stay categories."""
@@ -104,7 +95,6 @@ def add_los_bucket(df: DataFrame) -> DataFrame:
         .otherwise("Long"),
     )
 
-
 def add_comorbidity_index(df: DataFrame) -> DataFrame:
     """Count of distinct diagnoses per patient across all admissions, as a
     proxy for comorbidity burden."""
@@ -112,7 +102,6 @@ def add_comorbidity_index(df: DataFrame) -> DataFrame:
     return df.withColumn(
         "comorbidity_index", F.size(F.collect_set("diagnosis_id").over(window))
     )
-
 
 def add_prior_admission_count(df: DataFrame) -> DataFrame:
     """Running count of a patient's admissions strictly before the current one,
@@ -124,7 +113,6 @@ def add_prior_admission_count(df: DataFrame) -> DataFrame:
     )
     return df.withColumn("prior_admission_count", F.count("admission_id").over(window))
 
-
 def validate_referential_integrity(
     admissions_df: DataFrame, patients_df: DataFrame, diagnoses_df: DataFrame
 ) -> DataFrame:
@@ -135,7 +123,6 @@ def validate_referential_integrity(
     return admissions_df.join(valid_patients, "patient_id", "inner").join(
         valid_diagnoses, "diagnosis_id", "inner"
     )
-
 
 def build_silver_admissions_enriched(
     patients_df: DataFrame, diagnoses_df: DataFrame, admissions_df: DataFrame

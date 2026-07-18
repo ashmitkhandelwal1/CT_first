@@ -16,7 +16,7 @@
 # DBTITLE 1,Configuration
 import sys, os, importlib
 
-PROJECT_ROOT = "/Workspace/Users/aman.kumar5@celebaltech.com/Smart-Patient-Readmission-Risk-Pipeline"
+PROJECT_ROOT = "/Workspace/Users/ashmitkhandelwal58@gmail.com/CT_first/Smart-Patient-Readmission-Risk-Pipeline"
 if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 

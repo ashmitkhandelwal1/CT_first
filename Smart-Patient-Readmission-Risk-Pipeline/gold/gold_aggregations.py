@@ -21,6 +21,7 @@
 # COMMAND ----------
 
 # DBTITLE 1,Imports and Configuration
+# Databricks notebook source
 import os
 import sys
 
@@ -37,21 +38,18 @@ from pyspark.sql.window import Window
 
 import config as cfg
 from utils.helpers import (
-    optimize_table,
-    analyze_table,
     log_table_stats,
     write_delta_overwrite,
 )
 
-# Databricks Free Edition
-# apply_spark_optimizations(spark, cfg.SPARK_OPTIMIZATIONS)
-
+# Setup namespace contexts dynamically
 spark.sql(f"CREATE SCHEMA IF NOT EXISTS {cfg.CATALOG}.{cfg.SCHEMA}")
+spark.sql(f"USE CATALOG {cfg.CATALOG}")
+spark.sql(f"USE SCHEMA {cfg.SCHEMA}")
 
 print(f"\nUsing: {cfg.CATALOG}.{cfg.SCHEMA}")
 
 silver_df = spark.table(cfg.SILVER_ADMISSIONS_ENRICHED)
-#silver_df.cache()
 
 print(f"silver_admissions_enriched: {silver_df.count()} rows")
 
@@ -166,8 +164,6 @@ write_delta_overwrite(department_performance, cfg.GOLD_DEPARTMENT_PERFORMANCE)
 write_delta_overwrite(age_group_risk, cfg.GOLD_AGE_GROUP_RISK)
 write_delta_overwrite(patient_risk_profile, cfg.GOLD_PATIENT_RISK_PROFILE)
 
-silver_df.unpersist()
-
 print("\n" + "=" * 60)
 print("GOLD LAYER WRITE COMPLETE")
 print("=" * 60)
@@ -179,24 +175,13 @@ for table in (
 ):
     log_table_stats(spark, table)
 
-# ── Delta optimization pass ──
-print("\nDelta optimization:")
-for table in (
-    cfg.GOLD_READMISSION_BY_DIAGNOSIS,
-    cfg.GOLD_DEPARTMENT_PERFORMANCE,
-    cfg.GOLD_AGE_GROUP_RISK,
-    cfg.GOLD_PATIENT_RISK_PROFILE,
-):
-    optimize_table(spark, table, cfg.ZORDER_COLUMNS.get(table))
-    analyze_table(spark, table)
-
 # COMMAND ----------
 
 # DBTITLE 1,Validation Summary
 # ────────────────────────────────────────────
 # 6) Business validation checks
 # ────────────────────────────────────────────
-print("Risk category distribution:")
+print("\nRisk category distribution:")
 spark.table(cfg.GOLD_PATIENT_RISK_PROFILE).groupBy("risk_category").count().orderBy(
     F.desc("count")
 ).show(truncate=False)

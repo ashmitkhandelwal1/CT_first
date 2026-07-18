@@ -3,32 +3,19 @@ Shared utilities for the Smart Patient Readmission Risk Pipeline.
 
 Covers three concerns used across all layers:
   - Synthetic data quality injection (nulls, inconsistent categories, date noise)
-  - Delta Lake write / optimize / analyze helpers
+  - Delta Lake write / optimize / analyze helpers (Safeguarded for Free Edition)
   - Validation helpers (duplicate keys, table stats)
 """
 
 import random
 from datetime import datetime, timedelta
-
 from pyspark.sql import DataFrame, SparkSession
-
 
 def apply_spark_optimizations(spark: SparkSession, optimizations: dict) -> None:
     """
-    Apply Spark configs, skipping ones that aren't supported by
-    Databricks Free Edition / Spark Connect.
+    Safely bypasses cluster tuning for Databricks Free Edition / Spark Connect.
     """
-    applied = 0
-
-    for key, value in optimizations.items():
-        try:
-            spark.conf.set(key, value)
-            print(f"✓ {key}")
-            applied += 1
-        except Exception as e:
-            print(f"Skipped {key}: {e}")
-
-    print(f"Applied {applied}/{len(optimizations)} Spark settings")
+    print("Bypassing manual spark.conf.set optimizations (Auto-managed in Free Edition).")
 
 
 def write_delta_overwrite(df: DataFrame, table_name: str) -> None:
@@ -43,20 +30,13 @@ def write_delta_overwrite(df: DataFrame, table_name: str) -> None:
 
 
 def optimize_table(spark: SparkSession, table_name: str, zorder_cols: list = None) -> None:
-    """Run Delta OPTIMIZE, optionally with ZORDER BY the given columns."""
-    if zorder_cols:
-        cols = ", ".join(zorder_cols)
-        spark.sql(f"OPTIMIZE {table_name} ZORDER BY ({cols})")
-        print(f"OPTIMIZE + ZORDER({cols}) complete: {table_name}")
-    else:
-        spark.sql(f"OPTIMIZE {table_name}")
-        print(f"OPTIMIZE complete: {table_name}")
+    """Safely bypasses explicit OPTIMIZE commands for Databricks Free Edition."""
+    print(f"Skipping explicit OPTIMIZE for {table_name} (Auto-managed in Free Edition).")
 
 
 def analyze_table(spark: SparkSession, table_name: str) -> None:
-    """Compute table statistics for the query planner."""
-    spark.sql(f"ANALYZE TABLE {table_name} COMPUTE STATISTICS FOR ALL COLUMNS")
-    print(f"ANALYZE complete: {table_name}")
+    """Safely bypasses explicit ANALYZE commands for Databricks Free Edition."""
+    print(f"Skipping explicit ANALYZE for {table_name} (Auto-managed in Free Edition).")
 
 
 def log_table_stats(spark: SparkSession, table_name: str) -> None:

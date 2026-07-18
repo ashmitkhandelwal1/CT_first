@@ -3,30 +3,29 @@ Central configuration for the Smart Patient Readmission Risk Pipeline.
 
 Single source of truth for catalog/schema targeting, table names,
 data generation parameters, and Spark/Delta optimization settings.
-
-CATALOG and SCHEMA are resolved via Databricks widgets so the pipeline
-is portable across workspaces. Defaults target the built-in `workspace`
-catalog, which is available out of the box on Databricks Free Edition
-(classic external Unity Catalog setup is not required).
-
-To point at a different catalog/schema, set the `catalog` / `schema`
-widgets on the notebook, or override the values below directly.
+Refactored for Databricks Free Edition & Spark Connect compatibility.
 """
 
-try:
-    from pyspark.dbutils import DBUtils
-    from pyspark.sql import SparkSession
+from pyspark.sql import SparkSession
 
-    _spark = SparkSession.getActiveSession()
-    dbutils = DBUtils(_spark)
+# ── Safe Widget & Environment Resolution ──
+try:
+    # Access the runtime utility framework safely in serverless environments
+    from databricks.sdk.runtime import dbutils
+    
     dbutils.widgets.text("catalog", "workspace")
     dbutils.widgets.text("schema", "ashmit_readmission")
     CATALOG = dbutils.widgets.get("catalog")
     SCHEMA = dbutils.widgets.get("schema")
 except Exception:
-    # Fallback for non-Databricks / local static analysis
-    CATALOG = "workspace"
-    SCHEMA = "ashmit_readmission"
+    try:
+        # Fallback to globally bound namespace inside notebook scope
+        CATALOG = dbutils.widgets.get("catalog")
+        SCHEMA = dbutils.widgets.get("schema")
+    except Exception:
+        # Fallback for local testing and static linting
+        CATALOG = "workspace"
+        SCHEMA = "ashmit_readmission"
 
 RANDOM_SEED = 42
 
@@ -57,7 +56,6 @@ DIAGNOSIS_CATALOG = (
 )
 
 # Relative sampling weights, same order as DIAGNOSIS_CATALOG
-# (common chronic conditions weighted higher than rarer acute ones)
 DIAGNOSIS_WEIGHTS = (14, 10, 12, 10, 8, 6, 10, 6, 5, 6, 7, 6)
 
 # ── Departments (canonical, clean values) ──
@@ -117,24 +115,15 @@ GOLD_DEPARTMENT_PERFORMANCE = f"{CATALOG}.{SCHEMA}.department_performance"
 GOLD_AGE_GROUP_RISK = f"{CATALOG}.{SCHEMA}.age_group_risk"
 GOLD_PATIENT_RISK_PROFILE = f"{CATALOG}.{SCHEMA}.patient_risk_profile"
 
-# ── ZORDER strategy per table (post-write OPTIMIZE) ──
+# ── Spark Connect Compatible Metadata Structures ──
+# Maintained as empty lists/dictionaries to prevent down-stream script compilation errors
 ZORDER_COLUMNS = {
-    BRONZE_ADMISSIONS: ["patient_id", "admission_date"],
-    SILVER_ADMISSIONS_ENRICHED: ["patient_id", "admission_date", "department"],
-    GOLD_READMISSION_BY_DIAGNOSIS: ["diagnosis_category"],
-    GOLD_DEPARTMENT_PERFORMANCE: ["department"],
-    GOLD_PATIENT_RISK_PROFILE: ["patient_id", "risk_category"],
+    BRONZE_ADMISSIONS: [],
+    SILVER_ADMISSIONS_ENRICHED: [],
+    GOLD_READMISSION_BY_DIAGNOSIS: [],
+    GOLD_DEPARTMENT_PERFORMANCE: [],
+    GOLD_PATIENT_RISK_PROFILE: [],
 }
 
-# ── Spark / Delta optimization settings, applied at the start of each notebook ──
-SPARK_OPTIMIZATIONS = {
-    "spark.sql.adaptive.enabled": "true",
-    "spark.sql.adaptive.coalescePartitions.enabled": "true",
-    "spark.sql.adaptive.skewJoin.enabled": "true",
-    "spark.sql.adaptive.skewJoin.skewedPartitionFactor": "5",
-    "spark.sql.adaptive.advisoryPartitionSizeInBytes": "128m",
-    "spark.sql.autoBroadcastJoinThreshold": str(10 * 1024 * 1024),  # 10 MB
-    "spark.sql.shuffle.partitions": "200",
-    "spark.databricks.delta.optimizeWrite.enabled": "true",
-    "spark.databricks.delta.autoCompact.enabled": "true",
-}
+# Cluster-level optimization strings removed to prevent serverless execution crashes
+SPARK_OPTIMIZATIONS = {}
